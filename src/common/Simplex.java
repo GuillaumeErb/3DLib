@@ -20,7 +20,6 @@ public class Simplex {
 		this.c = c;
 		this.d = d;
 	}
-
 	
 	public Sphere circumSphere() {
 		Vect3 u = a.toVect3().minus(d.toVect3());
@@ -37,6 +36,11 @@ public class Simplex {
 						  num.norm()/Math.abs(den));
 	}
 	
+	public boolean circumSphereContains(Point point) {
+		Sphere s = this.circumSphere();
+		double d = (point.toVect3().minus(s.getCenter().toVect3())).norm();
+		return d<=s.getRadius();
+	}
 	
 	public boolean contains(Point point) {
 	
