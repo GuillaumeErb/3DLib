@@ -14,7 +14,7 @@ public class PointCloud {
 		this.pointCloud = pointCloud;
 	}
 	
-	public Simplices toSimplices() {
+	public DelaunaySimplices toSimplices() {
 		int nbPoint = pointCloud.size();
 		if(nbPoint <= 3) {
 			return null;
@@ -24,7 +24,7 @@ public class PointCloud {
 	}
 
 	
-	public Simplices boundingBox() {
+	public DelaunaySimplices initializeDelaunaySimplices() {
 		
 		double xu = ((Point) pointCloud.toArray()[0]).getX();
 		double yu = ((Point) pointCloud.toArray()[0]).getY();
@@ -59,28 +59,16 @@ public class PointCloud {
 		xd--;yd--;zd--;xu++;yu++;zu++;
 		
 		Point ddd = new Point(xd,yd,zd);
-		Point duu = new Point(xd,yu,zu);
-		Point dud = new Point(xd,yu,zd);
 		Point ddu = new Point(xd,yd,zu);
+		Point dud = new Point(xd,yu,zd);
+		Point duu = new Point(xd,yu,zu);		
 		Point udd = new Point(xu,yd,zd);
 		Point udu = new Point(xu,yd,zu);
 		Point uud = new Point(xu,yu,zd);
 		Point uuu = new Point(xu,yu,zu);
 		
-		Simplex s1 = new Simplex(ddd, udd, ddu, dud);
-		Simplex s2 = new Simplex(dud, uud, udd, uuu);
-		Simplex s3 = new Simplex(uuu, duu, dud, ddu);
-		Simplex s4 = new Simplex(ddu, udu, udd, uuu);
-		Simplex s5 = new Simplex(uuu, udd, ddu, dud);
-		
-		Simplices simplices = new Simplices();
-		simplices.add(s1);
-		simplices.add(s2);
-		simplices.add(s3);
-		simplices.add(s4);
-		simplices.add(s5);
-		
-		return simplices;
+		return new DelaunaySimplices(ddd,ddu,dud,duu,udd,udu,uud,uuu);
+
 	}
 	
 }
