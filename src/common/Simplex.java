@@ -67,6 +67,27 @@ public class Simplex {
 			   d.equals(point) ;
 	}
 	
+	public boolean hasAsVertices(Point pa, Point pb, Point pc) {
+		
+		return 
+				
+		(pa.equals(a) ||
+		 pa.equals(b) ||
+		 pa.equals(c) ||
+		 pa.equals(d))&&
+		
+		(pb.equals(a) ||
+		 pb.equals(b) ||
+		 pb.equals(c) ||
+		 pb.equals(d))&&
+		
+		(pc.equals(a) ||
+		 pc.equals(b) ||
+		 pc.equals(c) ||
+		 pc.equals(d));
+		
+	}
+	
 	
 	public Point getA() {
 		return a;

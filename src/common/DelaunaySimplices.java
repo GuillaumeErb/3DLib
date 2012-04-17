@@ -8,6 +8,11 @@ import java.util.Collection;
 public class DelaunaySimplices {
 
 	/**
+	 * Collection of the points already added to the mesh.
+	 */
+	private Collection<Point> points;
+	
+	/**
 	 * Collection of the simplices allowing us to search simplices in it.
 	 * Pointer shared between all the simplices
 	 */
@@ -18,17 +23,23 @@ public class DelaunaySimplices {
 	 */
 	private Simplex current;
 	
-	/**
-	 * The neighbor at the opposite of the a vertex of the current simplex
-	 */
-	DelaunaySimplices na;
-	DelaunaySimplices nb;
-	DelaunaySimplices nc;
-	DelaunaySimplices nd;
+
+	private Collection<DelaunaySimplices> neighbors;
 	
 
 	public DelaunaySimplices(Point ddd, Point ddu, Point dud, Point duu,
 							 Point udd, Point udu, Point uud, Point uuu) {
+		
+		ArrayList<Point> points = new ArrayList<>(8);
+		points.add(ddd);
+		points.add(ddu);
+		points.add(dud);
+		points.add(duu);
+		points.add(udd);
+		points.add(udu);
+		points.add(uud);
+		points.add(uuu);
+		
 		
 		Simplex s1 = new Simplex(ddd, udd, ddu, dud);
 		Simplex s2 = new Simplex(uud, dud, uuu, udd);
@@ -36,11 +47,11 @@ public class DelaunaySimplices {
 		Simplex s4 = new Simplex(udu, ddu, udd, uuu);
 		Simplex s5 = new Simplex(uuu, ddu, udd, dud);
 		
-		this.setCurrent(s1);
-		DelaunaySimplices ds2 = new DelaunaySimplices(s2);
-		DelaunaySimplices ds3 = new DelaunaySimplices(s3);
-		DelaunaySimplices ds4 = new DelaunaySimplices(s4);
-		DelaunaySimplices ds5 = new DelaunaySimplices(s5);
+		this.setCurrent(s1); this.setPoints(points);
+		DelaunaySimplices ds2 = new DelaunaySimplices(points, s2);
+		DelaunaySimplices ds3 = new DelaunaySimplices(points, s3);
+		DelaunaySimplices ds4 = new DelaunaySimplices(points, s4);
+		DelaunaySimplices ds5 = new DelaunaySimplices(points, s5);
 		
 		this.simplices = new ArrayList<>();
 		this.simplices.add(this);
@@ -55,39 +66,30 @@ public class DelaunaySimplices {
 		ds5.setSimplices(simplices);
 		
 		
-		this.setANeighbor(ds5);
-		this.setBNeighbor(null);
-		this.setCNeighbor(null);
-		this.setDNeighbor(null);
+		this.getNeighbors().add(ds5);
 		
-		ds2.setANeighbor(ds5);
-		ds2.setBNeighbor(null);
-		ds2.setCNeighbor(null);
-		ds2.setDNeighbor(null);
+		ds2.getNeighbors().add(ds5);
 		
-		ds3.setANeighbor(ds5);
-		ds3.setBNeighbor(null);
-		ds3.setCNeighbor(null);
-		ds3.setDNeighbor(null);
+		ds3.getNeighbors().add(ds5);
 		
-		ds4.setANeighbor(ds5);
-		ds4.setBNeighbor(null);
-		ds4.setCNeighbor(null);
-		ds4.setDNeighbor(null);
-		
-		ds5.setANeighbor(this);
-		ds5.setBNeighbor(ds2);
-		ds5.setCNeighbor(ds3);
-		ds5.setDNeighbor(ds4);
-		
+		ds4.getNeighbors().add(ds5);
+	
+		ds5.getNeighbors().add(this);
+		ds5.getNeighbors().add(ds2);
+		ds5.getNeighbors().add(ds3);
+		ds5.getNeighbors().add(ds4);
+
 	}
 	
 	/**
 	 * Be carefull, you have to make a setSimplices after !
+	 * @param points 
 	 * @param current
 	 */
-	private DelaunaySimplices(Simplex current) {
+	private DelaunaySimplices(ArrayList<Point> points, Simplex current) {
 		this.setCurrent(current);
+		this.setPoints(points);
+		this.neighbors = new ArrayList<DelaunaySimplices>();
 	}
 	
 	public DelaunaySimplices(Collection<DelaunaySimplices> simplices, Simplex s) {
@@ -95,6 +97,24 @@ public class DelaunaySimplices {
 		this.current = s;
 	}
 
+	
+	private DelaunaySimplices getNeighbor(Point pa, Point pb, Point pc) {
+		for(DelaunaySimplices ds : neighbors) {
+			if(ds.getCurrent().hasAsVertices(pa, pb, pc)) {
+				return ds;
+			}
+		}
+		return null;
+	}
+	
+	private void remove() {
+		this.simplices.remove(this);
+		for(DelaunaySimplices ds : this.neighbors) {
+			ds.neighbors.remove(this);
+		}
+	}
+	
+	
 	public void addPoint(Point point) {
 		DelaunaySimplices dsim = this.getContainingSimplex(point);
 		Simplex current = dsim.getCurrent();
@@ -113,32 +133,42 @@ public class DelaunaySimplices {
 		this.simplices.add(ds2);
 		this.simplices.add(ds3);
 		this.simplices.add(ds4);
+
 		
-		ds1.setANeighbor(ds4);
-		ds1.setBNeighbor(ds3);
-		ds1.setCNeighbor(ds2);
-		ds1.setDNeighbor(ds1);
+		ds1.addNeighbors(this.getNeighbor(current.getA(), current.getB(), current.getC()));
+		ds1.addNeighbors(ds2);
+		ds1.addNeighbors(ds3);
+		ds1.addNeighbors(ds4);
 		
-		ds2.setANeighbor(ds4);
-		ds2.setBNeighbor(ds3);
-		ds2.setCNeighbor(ds1);
-		ds2.setDNeighbor(ds2);
+		ds2.addNeighbors(this.getNeighbor(current.getA(), current.getB(), current.getD()));
+		ds2.addNeighbors(ds1);
+		ds2.addNeighbors(ds3);
+		ds2.addNeighbors(ds4);
 		
-		ds3.setANeighbor(ds4);
-		ds3.setBNeighbor(ds2);
-		ds3.setCNeighbor(ds1);
-		ds3.setDNeighbor(ds3);
+		ds3.addNeighbors(this.getNeighbor(current.getA(), current.getC(), current.getD()));
+		ds3.addNeighbors(ds1);
+		ds3.addNeighbors(ds2);
+		ds3.addNeighbors(ds4);
 		
-		ds4.setANeighbor(ds3);
-		ds4.setBNeighbor(ds2);
-		ds4.setCNeighbor(ds1);
-		ds4.setDNeighbor(ds4);
+		ds4.addNeighbors(this.getNeighbor(current.getB(), current.getC(), current.getD()));
+		ds4.addNeighbors(ds1);
+		ds4.addNeighbors(ds2);
+		ds4.addNeighbors(ds3);
+		
+		this.remove();
 		
 		
 		//TODO Check the Delaunay criteria
 		
 	}
 	
+	private void checkDelaunayCriteria(DelaunaySimplices simplex) {
+
+	}
+	
+	private void flipWith(DelaunaySimplices simplex) {
+		
+	}
 	
 	public DelaunaySimplices getContainingSimplex(Point point) {
 		for(DelaunaySimplices s : simplices) {
@@ -148,44 +178,6 @@ public class DelaunaySimplices {
 		}
 		return null;
 	}
-	
-	
-	
-	public DelaunaySimplices getANeighbor() {
-		return this.na;
-	}
-
-	public void setANeighbor(DelaunaySimplices na) {
-		this.na = na;
-	}
-	
-	
-	public DelaunaySimplices getBNeighbor() {
-		return this.nb;
-	}
-	
-	public void setBNeighbor(DelaunaySimplices nb) {
-		this.nb = nb;
-	}
-	
-	
-	public DelaunaySimplices getCNeighbor() {
-		return this.nc;
-	}
-	
-	public void setCNeighbor(DelaunaySimplices nc) {
-		this.nc = nc;
-	}
-	
-	
-	public DelaunaySimplices getDNeighbor() {
-		return this.nd;
-	}
-	
-	public void setDNeighbor(DelaunaySimplices nd) {
-		this.nd = nd;
-	}
-	
 	
 	
 	public Simplex getCurrent() {
@@ -202,6 +194,22 @@ public class DelaunaySimplices {
 
 	public void setSimplices(Collection<DelaunaySimplices> simplices) {
 		this.simplices = simplices;
+	}
+
+	public Collection<Point> getPoints() {
+		return points;
+	}
+
+	public void setPoints(Collection<Point> points) {
+		this.points = points;
+	}
+
+	public Collection<DelaunaySimplices> getNeighbors() {
+		return neighbors;
+	}
+
+	public void addNeighbors(DelaunaySimplices simplex) {
+		this.neighbors.add(simplex);
 	}
 	
 }
