@@ -1,5 +1,8 @@
 package common;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 public class Simplex {
 	
 	private Point a;
@@ -36,10 +39,36 @@ public class Simplex {
 						  num.norm()/Math.abs(den));
 	}
 	
-	public boolean circumSphereContains(Point point) {
+	public int circumSphereContains(Point point) {
 		Sphere s = this.circumSphere();
 		double d = (point.toVect3().minus(s.getCenter().toVect3())).norm();
-		return d<=s.getRadius();
+		if(d<s.getRadius()) {
+			return 1;
+		} else if (d == s.getRadius()) {
+			return 2;
+		} else {
+			return 0;
+		}
+	}
+	
+	public Collection<Point> getCommonPoints(Simplex simplex) {
+		
+		Collection<Point> result = new HashSet<Point>();
+		
+		if(this.hasAsVertex(simplex.getA())) {
+			result.add(simplex.getA());
+		}
+		if(this.hasAsVertex(simplex.getB())) {
+			result.add(simplex.getB());
+		}
+		if(this.hasAsVertex(simplex.getC())) {
+			result.add(simplex.getC());
+		}
+		if(this.hasAsVertex(simplex.getD())) {
+			result.add(simplex.getD());
+		}
+		
+		return result;
 	}
 	
 	public boolean contains(Point point) {

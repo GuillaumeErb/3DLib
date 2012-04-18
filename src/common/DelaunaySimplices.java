@@ -2,6 +2,9 @@ package common;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 //TODO This class definitely needs illustrations !!!
 
@@ -27,70 +30,16 @@ public class DelaunaySimplices {
 	private Collection<DelaunaySimplices> neighbors;
 	
 
-	public DelaunaySimplices(Point ddd, Point ddu, Point dud, Point duu,
-							 Point udd, Point udu, Point uud, Point uuu) {
-		
-		ArrayList<Point> points = new ArrayList<>(8);
-		points.add(ddd);
-		points.add(ddu);
-		points.add(dud);
-		points.add(duu);
-		points.add(udd);
-		points.add(udu);
-		points.add(uud);
-		points.add(uuu);
-		
-		
-		Simplex s1 = new Simplex(ddd, udd, ddu, dud);
-		Simplex s2 = new Simplex(uud, dud, uuu, udd);
-		Simplex s3 = new Simplex(duu, uuu, dud, ddu);
-		Simplex s4 = new Simplex(udu, ddu, udd, uuu);
-		Simplex s5 = new Simplex(uuu, ddu, udd, dud);
-		
-		this.setCurrent(s1); this.setPoints(points);
-		DelaunaySimplices ds2 = new DelaunaySimplices(points, s2);
-		DelaunaySimplices ds3 = new DelaunaySimplices(points, s3);
-		DelaunaySimplices ds4 = new DelaunaySimplices(points, s4);
-		DelaunaySimplices ds5 = new DelaunaySimplices(points, s5);
-		
-		this.simplices = new ArrayList<>();
-		this.simplices.add(this);
-		this.simplices.add(ds2);
-		this.simplices.add(ds3);
-		this.simplices.add(ds4);
-		this.simplices.add(ds5);
-		
-		ds2.setSimplices(simplices);
-		ds3.setSimplices(simplices);
-		ds4.setSimplices(simplices);
-		ds5.setSimplices(simplices);
-		
-		
-		this.getNeighbors().add(ds5);
-		
-		ds2.getNeighbors().add(ds5);
-		
-		ds3.getNeighbors().add(ds5);
-		
-		ds4.getNeighbors().add(ds5);
-	
-		ds5.getNeighbors().add(this);
-		ds5.getNeighbors().add(ds2);
-		ds5.getNeighbors().add(ds3);
-		ds5.getNeighbors().add(ds4);
-
-	}
-	
-	/**
-	 * Be carefull, you have to make a setSimplices after !
-	 * @param points 
-	 * @param current
-	 */
-	private DelaunaySimplices(ArrayList<Point> points, Simplex current) {
-		this.setCurrent(current);
-		this.setPoints(points);
+	public DelaunaySimplices(Simplex simplex) {
+		this.setCurrent(simplex);
 		this.neighbors = new ArrayList<DelaunaySimplices>();
+		this.points = new ArrayList<Point>();
+		this.points.add(simplex.getA());
+		this.points.add(simplex.getB());
+		this.points.add(simplex.getC());
+		this.points.add(simplex.getD());
 	}
+	
 	
 	public DelaunaySimplices(Collection<DelaunaySimplices> simplices, Simplex s) {
 		this.simplices = simplices;
@@ -115,7 +64,7 @@ public class DelaunaySimplices {
 	}
 	
 	
-	public void addPoint(Point point) {
+	public DelaunaySimplices addPoint(Point point) {
 		DelaunaySimplices dsim = this.getContainingSimplex(point);
 		Simplex current = dsim.getCurrent();
 		
@@ -157,16 +106,53 @@ public class DelaunaySimplices {
 		
 		this.remove();
 		
-		
+		return ds1;
 		//TODO Check the Delaunay criteria
 		
 	}
 	
-	private void checkDelaunayCriteria(DelaunaySimplices simplex) {
-
+	
+	private HashMap<Point, DelaunaySimplices> getCriticalPoints() {
+		HashMap<Point,DelaunaySimplices> result = new HashMap<Point,DelaunaySimplices>();
+		for(DelaunaySimplices ds : this.neighbors) {
+			result.put(ds.getCurrent().getA(), ds);
+			result.put(ds.getCurrent().getB(), ds);
+			result.put(ds.getCurrent().getC(), ds);
+			result.put(ds.getCurrent().getD(), ds);
+		}
+		result.remove(this.getCurrent().getA());
+		result.remove(this.getCurrent().getB());
+		result.remove(this.getCurrent().getC());
+		result.remove(this.getCurrent().getD());
+		
+		return result;
+	}
+	
+	
+	private DelaunaySimplices checkDelaunayCriteria() {
+		HashMap<Point, DelaunaySimplices> criticalPoints = this.getCriticalPoints();
+		for(Point point : criticalPoints.keySet()) {
+			if(this.getCurrent().circumSphereContains(point) == 1) {
+				return criticalPoints.get(point);
+			}
+		}
+		return null;
 	}
 	
 	private void flipWith(DelaunaySimplices simplex) {
+		
+		Collection<Point> common = this.getCurrent().getCommonPoints(simplex.getCurrent());
+		
+		Point a1 = this.getCurrent().getA();
+		Point b1 = this.getCurrent().getB();
+		Point c1 = this.getCurrent().getC();
+		Point d1 = this.getCurrent().getD();
+		
+		Point a2 = simplex.getCurrent().getA();
+		Point b2 = simplex.getCurrent().getB();
+		Point c2 = simplex.getCurrent().getC();
+		Point d2 = simplex.getCurrent().getD();
+		
 		
 	}
 	
