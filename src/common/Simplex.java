@@ -1,5 +1,6 @@
 package common;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -117,6 +118,15 @@ public class Simplex {
 		
 	}
 	
+	public Collection<Point> getPoints() {
+		Collection<Point> points = new ArrayList<Point>();
+		points.add(a);
+		points.add(b);
+		points.add(c);
+		points.add(d);
+		
+		return points;
+	}
 	
 	public Point getA() {
 		return a;

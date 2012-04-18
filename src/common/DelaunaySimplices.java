@@ -47,6 +47,12 @@ public class DelaunaySimplices {
 	}
 
 	
+	public void execute(Collection<Point> points) {
+		for(Point point : points) {
+			this.addPoint(point);
+		}
+	}
+	
 	private DelaunaySimplices getNeighbor(Point pa, Point pb, Point pc) {
 		for(DelaunaySimplices ds : neighbors) {
 			if(ds.getCurrent().hasAsVertices(pa, pb, pc)) {
@@ -64,97 +70,84 @@ public class DelaunaySimplices {
 	}
 	
 	
-	public DelaunaySimplices addPoint(Point point) {
+	public void addPoint(Point point) {
+		
+		this.points.add(point);
+		
 		DelaunaySimplices dsim = this.getContainingSimplex(point);
-		Simplex current = dsim.getCurrent();
-		
-		Simplex s1 = new Simplex(current.getA(), current.getB(), current.getC(), point);
-		Simplex s2 = new Simplex(current.getA(), current.getB(), current.getD(), point);
-		Simplex s3 = new Simplex(current.getA(), current.getC(), current.getD(), point);
-		Simplex s4 = new Simplex(current.getB(), current.getC(), current.getD(), point);
-		
-		DelaunaySimplices ds1 = new DelaunaySimplices(this.simplices, s1);
-		DelaunaySimplices ds2 = new DelaunaySimplices(this.simplices, s2);
-		DelaunaySimplices ds3 = new DelaunaySimplices(this.simplices, s3);
-		DelaunaySimplices ds4 = new DelaunaySimplices(this.simplices, s4);
-		
-		this.simplices.add(ds1);
-		this.simplices.add(ds2);
-		this.simplices.add(ds3);
-		this.simplices.add(ds4);
+		Collection<DelaunaySimplices> critical = dsim.getCriticalSimplices(point);
 
+		for(DelaunaySimplices ds : critical) {
+			ds.remove();
+		}
 		
-		ds1.addNeighbors(this.getNeighbor(current.getA(), current.getB(), current.getC()));
-		ds1.addNeighbors(ds2);
-		ds1.addNeighbors(ds3);
-		ds1.addNeighbors(ds4);
-		
-		ds2.addNeighbors(this.getNeighbor(current.getA(), current.getB(), current.getD()));
-		ds2.addNeighbors(ds1);
-		ds2.addNeighbors(ds3);
-		ds2.addNeighbors(ds4);
-		
-		ds3.addNeighbors(this.getNeighbor(current.getA(), current.getC(), current.getD()));
-		ds3.addNeighbors(ds1);
-		ds3.addNeighbors(ds2);
-		ds3.addNeighbors(ds4);
-		
-		ds4.addNeighbors(this.getNeighbor(current.getB(), current.getC(), current.getD()));
-		ds4.addNeighbors(ds1);
-		ds4.addNeighbors(ds2);
-		ds4.addNeighbors(ds3);
-		
-		this.remove();
-		
-		return ds1;
-		//TODO Check the Delaunay criteria
+		for(DelaunaySimplices ds : critical) {
+			for(Point sPoint : ds.getCurrent().getPoints()) {
+				Simplex s1 = new Simplex(current.getA(), current.getB(), current.getC(), sPoint);
+				Simplex s2 = new Simplex(current.getA(), current.getB(), current.getD(), sPoint);
+				Simplex s3 = new Simplex(current.getA(), current.getC(), current.getD(), sPoint);
+				Simplex s4 = new Simplex(current.getB(), current.getC(), current.getD(), sPoint);
+
+				DelaunaySimplices ds1 = new DelaunaySimplices(this.simplices, s1);
+				DelaunaySimplices ds2 = new DelaunaySimplices(this.simplices, s2);
+				DelaunaySimplices ds3 = new DelaunaySimplices(this.simplices, s3);
+				DelaunaySimplices ds4 = new DelaunaySimplices(this.simplices, s4);
+
+				this.simplices.add(ds1);
+				this.simplices.add(ds2);
+				this.simplices.add(ds3);
+				this.simplices.add(ds4);
+
+				DelaunaySimplices dsabc = this.getNeighbor(current.getA(), current.getB(), current.getC());
+				DelaunaySimplices dsabd = this.getNeighbor(current.getA(), current.getB(), current.getD());
+				DelaunaySimplices dsacd = this.getNeighbor(current.getA(), current.getC(), current.getD());
+				DelaunaySimplices dsbcd = this.getNeighbor(current.getB(), current.getC(), current.getD());
+				
+				ds1.addNeighbors(dsabc);
+				ds1.addNeighbors(ds2);
+				ds1.addNeighbors(ds3);
+				ds1.addNeighbors(ds4);
+				dsabc.addNeighbors(ds1);
+
+				ds2.addNeighbors(dsabd);
+				ds2.addNeighbors(ds1);
+				ds2.addNeighbors(ds3);
+				ds2.addNeighbors(ds4);
+				dsabd.addNeighbors(ds2);
+
+				ds3.addNeighbors(dsacd);
+				ds3.addNeighbors(ds1);
+				ds3.addNeighbors(ds2);
+				ds3.addNeighbors(ds4);
+				dsacd.addNeighbors(ds3);
+
+				ds4.addNeighbors(dsbcd);
+				ds4.addNeighbors(ds1);
+				ds4.addNeighbors(ds2);
+				ds4.addNeighbors(ds3);
+				dsbcd.addNeighbors(ds4);
+			}			
+		}
 		
 	}
 	
 	
-	private HashMap<Point, DelaunaySimplices> getCriticalPoints() {
-		HashMap<Point,DelaunaySimplices> result = new HashMap<Point,DelaunaySimplices>();
+	private Collection<DelaunaySimplices> getCriticalSimplices(Point point) {
+		Collection<DelaunaySimplices> result = new ArrayList<DelaunaySimplices>();
+		
 		for(DelaunaySimplices ds : this.neighbors) {
-			result.put(ds.getCurrent().getA(), ds);
-			result.put(ds.getCurrent().getB(), ds);
-			result.put(ds.getCurrent().getC(), ds);
-			result.put(ds.getCurrent().getD(), ds);
+			if(/*!ds.equals(this) && */ds.getCurrent().circumSphereContains(point) == 1) {
+				result.add(ds);
+			}
 		}
-		result.remove(this.getCurrent().getA());
-		result.remove(this.getCurrent().getB());
-		result.remove(this.getCurrent().getC());
-		result.remove(this.getCurrent().getD());
 		
 		return result;
 	}
 	
 	
-	private DelaunaySimplices checkDelaunayCriteria() {
-		HashMap<Point, DelaunaySimplices> criticalPoints = this.getCriticalPoints();
-		for(Point point : criticalPoints.keySet()) {
-			if(this.getCurrent().circumSphereContains(point) == 1) {
-				return criticalPoints.get(point);
-			}
-		}
-		return null;
-	}
 	
-	private void flipWith(DelaunaySimplices simplex) {
-		
-		Collection<Point> common = this.getCurrent().getCommonPoints(simplex.getCurrent());
-		
-		Point a1 = this.getCurrent().getA();
-		Point b1 = this.getCurrent().getB();
-		Point c1 = this.getCurrent().getC();
-		Point d1 = this.getCurrent().getD();
-		
-		Point a2 = simplex.getCurrent().getA();
-		Point b2 = simplex.getCurrent().getB();
-		Point c2 = simplex.getCurrent().getC();
-		Point d2 = simplex.getCurrent().getD();
-		
-		
-	}
+	
+	
 	
 	public DelaunaySimplices getContainingSimplex(Point point) {
 		for(DelaunaySimplices s : simplices) {
@@ -176,10 +169,6 @@ public class DelaunaySimplices {
 
 	public Collection<DelaunaySimplices> getSimplices() {
 		return simplices;
-	}
-
-	public void setSimplices(Collection<DelaunaySimplices> simplices) {
-		this.simplices = simplices;
 	}
 
 	public Collection<Point> getPoints() {
