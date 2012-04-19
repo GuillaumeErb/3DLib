@@ -29,11 +29,21 @@ public class PointCloud {
 		} else {
 			Simplex superSimplex = this.getSurroundingSimplex();
 			DelaunaySimplices result = new DelaunaySimplices(superSimplex);
-			result.execute(pointCloud);
+			result.triangulate(pointCloud);
 			return result;
 		}
 	}
 
+	public Mesh toMesh() {
+		int nbPoint = pointCloud.size();
+		if(nbPoint <= 3) { //TODO handle the 3 case
+			return null;
+		} else {
+			Simplex superSimplex = this.getSurroundingSimplex();
+			DelaunaySimplices result = new DelaunaySimplices(superSimplex);
+			return result.transformToMesh(pointCloud);
+		}
+	}
 	
 	public Simplex getSurroundingSimplex() {
 		
@@ -110,5 +120,4 @@ public class PointCloud {
 		
 		return new Simplex(new Point(a), new Point(b), new Point(c), new Point(d));
 	}
-	
 }

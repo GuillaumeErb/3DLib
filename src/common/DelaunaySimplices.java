@@ -56,17 +56,50 @@ public class DelaunaySimplices {
 	}
 
 	
-	public void execute(Collection<Point> points) {
+	public void triangulate(Collection<Point> points) {
 		for(Point point : points) {
 			this.addPoint(point);
 		}
-		this.makeDisapear();
+		this.makeDisapear(this.getCurrent().getPoints());
 	}
-
 	
-	private void makeDisapear() {
+	
+	public void triangulate(Collection<Point> points, Collection<Point> virtualPoints) {
+		for(Point point : points) {
+			this.addPoint(point);
+		}
+		this.makeDisapear(this.getCurrent().getPoints());
+		this.makeDisapear(virtualPoints);
+	}
+	
+	
+	public Mesh transformToMesh(Collection<Point> points) {
+		Mesh mesh = new Mesh();
+		
+		Vect3 vg = new Vect3(0,0,0);
+		int i = 0;
+		for(Point point : points) {
+			i++;
+			vg = vg.plus(point.toVect3()); 
+			this.addPoint(point);
+		}
+		Point g = new Point(vg.dividedBy(i));
+		this.addPoint(g);
+		
+		this.makeDisapear(this.getCurrent().getPoints());
+		
+		for(DelaunaySimplices ds : this.simplices) {
+			if(ds.getCurrent().hasAsVertex(g)) {
+				mesh.addTriangle(ds.getCurrent().extractTriangle(g));
+			}
+		}
+		
+		return mesh;
+	}
+	
+	private void makeDisapear(Collection<Point> rPoints) {
 		Set<DelaunaySimplices> toBeRemoved = new HashSet<DelaunaySimplices>();
-		for(Point point : this.current.getPoints()) {
+		for(Point point : rPoints) {
 			for(DelaunaySimplices simplex : this.simplices) {
 				if(simplex.getCurrent().hasAsVertex(point)) {
 					toBeRemoved.add(simplex);
@@ -97,7 +130,7 @@ public class DelaunaySimplices {
 	}
 	
 	
-	public void addPoint(Point point) {
+	private void addPoint(Point point) {
 		
 		this.points.add(point);
 		
@@ -184,7 +217,7 @@ public class DelaunaySimplices {
 	}
 	
 	
-	public DelaunaySimplices getContainingSimplex(Point point) {
+	private DelaunaySimplices getContainingSimplex(Point point) {
 		for(DelaunaySimplices s : simplices) {
 			if(s.getCurrent().contains(point)) {
 				return s;

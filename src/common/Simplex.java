@@ -127,6 +127,18 @@ public class Simplex {
 		return points;
 	}
 	
+	public Triangle extractTriangle(Point point) {
+		if(this.a.equals(point)) {
+			return new Triangle(b,c,d);
+		} else if(this.b.equals(point)) {
+			return new Triangle(a,c,d);
+		} else if(this.c.equals(point)) {
+			return new Triangle(a,b,d);
+		} else if(this.d.equals(point)) {
+			return new Triangle(a,b,c);
+		} else return null;
+	}
+	
 	public Point getA() {
 		return a;
 	}
