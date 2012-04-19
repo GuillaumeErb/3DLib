@@ -88,11 +88,10 @@ public class DelaunaySimplices {
 		}
 		
 		for(DelaunaySimplices ds : critical) {
-			for(Point sPoint : ds.getCurrent().getPoints()) {
-				Simplex s1 = new Simplex(current.getA(), current.getB(), current.getC(), sPoint);
-				Simplex s2 = new Simplex(current.getA(), current.getB(), current.getD(), sPoint);
-				Simplex s3 = new Simplex(current.getA(), current.getC(), current.getD(), sPoint);
-				Simplex s4 = new Simplex(current.getB(), current.getC(), current.getD(), sPoint);
+				Simplex s1 = new Simplex(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getC(), point);
+				Simplex s2 = new Simplex(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getD(), point);
+				Simplex s3 = new Simplex(ds.getCurrent().getA(), ds.getCurrent().getC(), ds.getCurrent().getD(), point);
+				Simplex s4 = new Simplex(ds.getCurrent().getB(), ds.getCurrent().getC(), ds.getCurrent().getD(), point);
 
 				DelaunaySimplices ds1 = new DelaunaySimplices(this.simplices, s1, points);
 				DelaunaySimplices ds2 = new DelaunaySimplices(this.simplices, s2, points);
@@ -104,10 +103,10 @@ public class DelaunaySimplices {
 				this.simplices.add(ds3);
 				this.simplices.add(ds4);
 
-				DelaunaySimplices dsabc = this.getNeighbor(current.getA(), current.getB(), current.getC());
-				DelaunaySimplices dsabd = this.getNeighbor(current.getA(), current.getB(), current.getD());
-				DelaunaySimplices dsacd = this.getNeighbor(current.getA(), current.getC(), current.getD());
-				DelaunaySimplices dsbcd = this.getNeighbor(current.getB(), current.getC(), current.getD());
+				DelaunaySimplices dsabc = ds.getNeighbor(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getC());
+				DelaunaySimplices dsabd = ds.getNeighbor(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getD());
+				DelaunaySimplices dsacd = ds.getNeighbor(ds.getCurrent().getA(), ds.getCurrent().getC(), ds.getCurrent().getD());
+				DelaunaySimplices dsbcd = ds.getNeighbor(ds.getCurrent().getB(), ds.getCurrent().getC(), ds.getCurrent().getD());
 				
 				if(dsabc != null) {
 					ds1.addNeighbors(dsabc);
@@ -144,9 +143,8 @@ public class DelaunaySimplices {
 				ds4.addNeighbors(ds2);
 				ds4.addNeighbors(ds3);
 				
-			}			
 		}
-		
+		System.out.println(point + " added.");
 	}
 	
 	
