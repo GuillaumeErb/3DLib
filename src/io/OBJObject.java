@@ -91,7 +91,7 @@ public class OBJObject {
 	}
 	
 	
-	public void addFace(double[] vertices) {
+	public void addFace(int[] vertices) {
 		this.normals.append("f ");
 		for(double v : vertices) {
 			this.normals.append(v).append(" ");
@@ -99,7 +99,7 @@ public class OBJObject {
 		this.normals.append("\n");
 	}
 	
-	public void addFace(double[] vertices, double[] texture, double[] normals) {
+	public void addFace(int[] vertices, int[] texture, int[] normals) {
 		this.normals.append("f ");
 		if(texture != null && normals != null) {
 			for(int i=0; i<vertices.length; i++) {

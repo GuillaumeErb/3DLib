@@ -80,11 +80,10 @@ public class Simplex {
 		
 		Vect3 p = point.toVect3().minus(d.toVect3());
 		
-		double criteria = p.scalar(u) + p.scalar(v) + p.scalar(w); 
-		
-		if(criteria == 1) {
-			System.out.println("non unicity, 4 coplanar points");
-		}
+		double cu = p.scalar(u.normalize())/u.norm();
+		double cv = p.scalar(v.normalize())/v.norm();
+		double cw = p.scalar(w.normalize())/w.norm();
+		double criteria = cu + cv + cw; 
 		
 		return criteria <= 1;
 		

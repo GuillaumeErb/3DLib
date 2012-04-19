@@ -1,10 +1,10 @@
 package common;
 
+import io.OBJObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 //TODO This class definitely needs illustrations !!!
 
@@ -38,6 +38,8 @@ public class DelaunaySimplices {
 		this.points.add(simplex.getB());
 		this.points.add(simplex.getC());
 		this.points.add(simplex.getD());
+		this.simplices = new ArrayList<DelaunaySimplices>();
+		this.simplices.add(this);
 	}
 	
 	
@@ -136,17 +138,15 @@ public class DelaunaySimplices {
 		Collection<DelaunaySimplices> result = new ArrayList<DelaunaySimplices>();
 		
 		for(DelaunaySimplices ds : this.neighbors) {
-			if(/*!ds.equals(this) && */ds.getCurrent().circumSphereContains(point) == 1) {
+			if(/*!ds.equals(this) && */ds.getCurrent().circumSphereContains(point) >= 1) {
 				result.add(ds);
 			}
 		}
 		
+		result.add(this);
+		
 		return result;
 	}
-	
-	
-	
-	
 	
 	
 	public DelaunaySimplices getContainingSimplex(Point point) {
@@ -158,6 +158,39 @@ public class DelaunaySimplices {
 		return null;
 	}
 	
+	public OBJObject getOBJObject(String name) {
+		OBJObject obj = new OBJObject(name);
+		HashMap<Point, Integer> pointsToInt = new HashMap<Point, Integer>();
+		
+		int i = 1;
+		for(Point point : this.points) {
+			pointsToInt.put(point, i);
+			obj.addVertex(point.getX(), point.getY(), point.getZ());
+			i++;
+		}
+		
+		int[] face = {0,0,0};
+		for(DelaunaySimplices simplex : this.simplices) {
+			face[0] = pointsToInt.get(simplex.getCurrent().getA());
+			face[1] = pointsToInt.get(simplex.getCurrent().getB());
+			face[2] = pointsToInt.get(simplex.getCurrent().getC());
+			obj.addFace(face);
+			face[0] = pointsToInt.get(simplex.getCurrent().getA());
+			face[1] = pointsToInt.get(simplex.getCurrent().getB());
+			face[2] = pointsToInt.get(simplex.getCurrent().getD());
+			obj.addFace(face);
+			face[0] = pointsToInt.get(simplex.getCurrent().getA());
+			face[1] = pointsToInt.get(simplex.getCurrent().getC());
+			face[2] = pointsToInt.get(simplex.getCurrent().getD());
+			obj.addFace(face);
+			face[0] = pointsToInt.get(simplex.getCurrent().getB());
+			face[1] = pointsToInt.get(simplex.getCurrent().getC());
+			face[2] = pointsToInt.get(simplex.getCurrent().getD());
+			obj.addFace(face);
+		}
+		
+		return obj;
+	}
 	
 	public Simplex getCurrent() {
 		return current;

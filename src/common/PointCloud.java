@@ -27,7 +27,10 @@ public class PointCloud {
 		if(nbPoint <= 3) {
 			return null;
 		} else {
-			return null;
+			Simplex superSimplex = this.getSurroundingSimplex();
+			DelaunaySimplices result = new DelaunaySimplices(superSimplex);
+			result.execute(pointCloud);
+			return result;
 		}
 	}
 
@@ -64,10 +67,10 @@ public class PointCloud {
 		}
 		
 		// We transform rectangles into a square
-		double l = Math.max(Math.max(xu-xd, yu-yd), zu-zd);
-		xu = xd + l;
-		yu = yd + l;
-		zu = zd + l;
+//		double l = Math.max(Math.max(xu-xd, yu-yd), zu-zd);
+//		xu = xd + l;
+//		yu = yd + l;
+//		zu = zd + l;
 		
 		
 		Vect3 ddd = new Vect3(xd,yd,zd);

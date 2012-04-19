@@ -21,7 +21,7 @@ public class OBJBuilder {
 	public void save() {
 		FileWriter writer;
 		try {
-			writer = new FileWriter(fileName + ".obj");
+			writer = new FileWriter(fileName + "_delaunay.obj");
 			writer.write(builder.toString());
 			writer.close();
 		} catch (IOException e) {

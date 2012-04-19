@@ -13,14 +13,12 @@ public class Point {
 	 * @param z
 	 */
 	public Point(double x, double y, double z) {
-		super();
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	public Point(Vect3 v) {
-		super();
 		this.x = v.getX();
 		this.y = v.getY();
 		this.z = v.getZ();
