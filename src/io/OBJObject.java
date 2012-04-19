@@ -92,39 +92,39 @@ public class OBJObject {
 	
 	
 	public void addFace(int[] vertices) {
-		this.normals.append("f ");
-		for(double v : vertices) {
-			this.normals.append(v).append(" ");
+		this.faces.append("f ");
+		for(int v : vertices) {
+			this.faces.append(v).append(" ");
 		}
-		this.normals.append("\n");
+		this.faces.append("\n");
 	}
 	
 	public void addFace(int[] vertices, int[] texture, int[] normals) {
-		this.normals.append("f ");
+		this.faces.append("f ");
 		if(texture != null && normals != null) {
 			for(int i=0; i<vertices.length; i++) {
-				this.normals.append(vertices[i]).append("/")
-							.append(texture[i]).append("/")
-							.append(normals[i]).append(" ");
+				this.faces.append(vertices[i]).append("/")
+						  .append(texture[i]).append("/")
+						  .append(normals[i]).append(" ");
 			}
 		} else if (normals == null) {
 			for(int i=0; i<vertices.length; i++) {
-				this.normals.append(vertices[i]).append("/")
-							.append(texture[i]).append(" ");
+				this.faces.append(vertices[i]).append("/")
+						  .append(texture[i]).append(" ");
 			}
 		} else if (texture == null) {
 			for(int i=0; i<vertices.length; i++) {
-				this.normals.append(vertices[i]).append("//")
-							.append(normals[i]).append(" ");
+				this.faces.append(vertices[i]).append("//")
+						  .append(normals[i]).append(" ");
 			}
 		}
-		this.normals.append("\n");
+		this.faces.append("\n");
 	}
 	
 	
 	public String toOBJ() {
 		return "# " + objectName + "\n#\n\n" + 
-				"g " + objectName +
+				"g " + objectName + "\n\n" +
 				vertices.toString() + "\n" +
 				textureCoordinate.toString() + "\n" +
 				normals.toString() + "\n" +

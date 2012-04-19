@@ -31,7 +31,10 @@ public class DelaunaySimplices {
 
 	private Collection<DelaunaySimplices> neighbors;
 	
-
+	
+	private DelaunaySimplices superSimplex;
+	
+	
 	public DelaunaySimplices(Simplex simplex) {
 		this.setCurrent(simplex);
 		this.neighbors = new ArrayList<DelaunaySimplices>();
@@ -57,7 +60,25 @@ public class DelaunaySimplices {
 		for(Point point : points) {
 			this.addPoint(point);
 		}
+		this.makeDisapear();
 	}
+
+	
+	private void makeDisapear() {
+		Set<DelaunaySimplices> toBeRemoved = new HashSet<DelaunaySimplices>();
+		for(Point point : this.current.getPoints()) {
+			for(DelaunaySimplices simplex : this.simplices) {
+				if(simplex.getCurrent().hasAsVertex(point)) {
+					toBeRemoved.add(simplex);
+				}
+			}
+			this.points.remove(point);
+		}
+		for(DelaunaySimplices simplex : toBeRemoved) {
+			simplex.remove();
+		}
+	}
+	
 	
 	private DelaunaySimplices getNeighbor(Point pa, Point pb, Point pc) {
 		for(DelaunaySimplices ds : neighbors) {
