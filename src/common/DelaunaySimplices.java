@@ -5,6 +5,8 @@ import io.OBJObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 //TODO This class definitely needs illustrations !!!
 
@@ -19,7 +21,7 @@ public class DelaunaySimplices {
 	 * Collection of the simplices allowing us to search simplices in it.
 	 * Pointer shared between all the simplices
 	 */
-	private Collection<DelaunaySimplices> simplices;
+	private Set<DelaunaySimplices> simplices;
 	
 	/**
 	 * The current simplex (structure of list)
@@ -38,14 +40,16 @@ public class DelaunaySimplices {
 		this.points.add(simplex.getB());
 		this.points.add(simplex.getC());
 		this.points.add(simplex.getD());
-		this.simplices = new ArrayList<DelaunaySimplices>();
+		this.simplices = new HashSet<DelaunaySimplices>();
 		this.simplices.add(this);
 	}
 	
 	
-	public DelaunaySimplices(Collection<DelaunaySimplices> simplices, Simplex s) {
+	public DelaunaySimplices(Set<DelaunaySimplices> simplices, Simplex s, Collection<Point> points) {
 		this.simplices = simplices;
 		this.current = s;
+		this.neighbors = new ArrayList<DelaunaySimplices>();
+		this.points = points;
 	}
 
 	
@@ -90,10 +94,10 @@ public class DelaunaySimplices {
 				Simplex s3 = new Simplex(current.getA(), current.getC(), current.getD(), sPoint);
 				Simplex s4 = new Simplex(current.getB(), current.getC(), current.getD(), sPoint);
 
-				DelaunaySimplices ds1 = new DelaunaySimplices(this.simplices, s1);
-				DelaunaySimplices ds2 = new DelaunaySimplices(this.simplices, s2);
-				DelaunaySimplices ds3 = new DelaunaySimplices(this.simplices, s3);
-				DelaunaySimplices ds4 = new DelaunaySimplices(this.simplices, s4);
+				DelaunaySimplices ds1 = new DelaunaySimplices(this.simplices, s1, points);
+				DelaunaySimplices ds2 = new DelaunaySimplices(this.simplices, s2, points);
+				DelaunaySimplices ds3 = new DelaunaySimplices(this.simplices, s3, points);
+				DelaunaySimplices ds4 = new DelaunaySimplices(this.simplices, s4, points);
 
 				this.simplices.add(ds1);
 				this.simplices.add(ds2);
@@ -105,29 +109,41 @@ public class DelaunaySimplices {
 				DelaunaySimplices dsacd = this.getNeighbor(current.getA(), current.getC(), current.getD());
 				DelaunaySimplices dsbcd = this.getNeighbor(current.getB(), current.getC(), current.getD());
 				
-				ds1.addNeighbors(dsabc);
+				if(dsabc != null) {
+					ds1.addNeighbors(dsabc);
+					dsabc.addNeighbors(ds1);
+				}
 				ds1.addNeighbors(ds2);
 				ds1.addNeighbors(ds3);
 				ds1.addNeighbors(ds4);
-				dsabc.addNeighbors(ds1);
+				
 
-				ds2.addNeighbors(dsabd);
+				if(dsabd != null) {
+					ds2.addNeighbors(dsabd);
+					dsabd.addNeighbors(ds2);
+				}
 				ds2.addNeighbors(ds1);
 				ds2.addNeighbors(ds3);
 				ds2.addNeighbors(ds4);
-				dsabd.addNeighbors(ds2);
+				
 
-				ds3.addNeighbors(dsacd);
+				if(dsacd != null) {
+					ds3.addNeighbors(dsacd);
+					dsacd.addNeighbors(ds3);
+				}
 				ds3.addNeighbors(ds1);
 				ds3.addNeighbors(ds2);
 				ds3.addNeighbors(ds4);
-				dsacd.addNeighbors(ds3);
-
-				ds4.addNeighbors(dsbcd);
+				
+				
+				if(dsbcd != null) {
+					ds4.addNeighbors(dsbcd);
+					dsbcd.addNeighbors(ds4);
+				}
 				ds4.addNeighbors(ds1);
 				ds4.addNeighbors(ds2);
 				ds4.addNeighbors(ds3);
-				dsbcd.addNeighbors(ds4);
+				
 			}			
 		}
 		
