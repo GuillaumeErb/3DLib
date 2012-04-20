@@ -114,9 +114,9 @@ public class PointCloud {
 		Vect3 c1 = m.plus(y.times(3*radius));
 		
 		Vect3 d = o.plus(z.times(3*radius));
-		Vect3 a = a1.minus(d).times(2);
-		Vect3 b = b1.minus(d).times(2);
-		Vect3 c = c1.minus(d).times(2);
+		Vect3 a = d.plus(a1.minus(d).times(2));
+		Vect3 b = d.plus(b1.minus(d).times(2));
+		Vect3 c = d.plus(c1.minus(d).times(2));
 		
 		return new Simplex(new Point(a), new Point(b), new Point(c), new Point(d));
 	}

@@ -60,6 +60,7 @@ public class DelaunaySimplices {
 		for(Point point : points) {
 			this.addPoint(point);
 		}
+		
 		this.makeDisapear(this.getCurrent().getPoints());
 	}
 	
@@ -76,23 +77,27 @@ public class DelaunaySimplices {
 	public Mesh transformToMesh(Collection<Point> points) {
 		Mesh mesh = new Mesh();
 		
-		Vect3 vg = new Vect3(0,0,0);
-		int i = 0;
 		for(Point point : points) {
-			i++;
-			vg = vg.plus(point.toVect3()); 
 			this.addPoint(point);
 		}
-		Point g = new Point(vg.dividedBy(i));
-		this.addPoint(g);
 		
-		this.makeDisapear(this.getCurrent().getPoints());
+		Collection<Point> superPoints = this.current.getPoints();
 		
+		int i = 0;
+		Triangle candidate = null;
 		for(DelaunaySimplices ds : this.simplices) {
-			if(ds.getCurrent().hasAsVertex(g)) {
-				mesh.addTriangle(ds.getCurrent().extractTriangle(g));
+			for(Point p : superPoints) {
+				if(ds.getCurrent().hasAsVertex(p)) {
+					i++;
+					candidate = ds.getCurrent().extractTriangle(p);
+				}
+			}
+			if(i==1) {
+				mesh.addTriangle(candidate);
+				i=0;
 			}
 		}
+		
 		
 		return mesh;
 	}

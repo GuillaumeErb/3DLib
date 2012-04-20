@@ -73,22 +73,21 @@ public class Simplex {
 	}
 	
 	public boolean contains(Point point) {
-	
-		Vect3 u = a.toVect3().minus(d.toVect3());
-		Vect3 v = b.toVect3().minus(d.toVect3());
-		Vect3 w = c.toVect3().minus(d.toVect3());
+		return this.SameSide(point, a, b, c, d) &&
+			   this.SameSide(point, b, a, c, d) &&
+			   this.SameSide(point, c, a, b, d) &&
+			   this.SameSide(point, d, a, b, c) ;
 		
-		Vect3 p = point.toVect3().minus(d.toVect3());
-		
-		double cu = p.scalar(u.normalize())/u.norm();
-		double cv = p.scalar(v.normalize())/v.norm();
-		double cw = p.scalar(w.normalize())/w.norm();
-		double criteria = cu + cv + cw; 
-		
-		return criteria <= 1;
 		
 	}
 	
+	private boolean SameSide(Point p1, Point p2, Point a, Point b, Point c) {
+		Vect3 n = (a.toVect3().minus(c.toVect3())).cross(b.toVect3().minus(c.toVect3())).normalize();
+		Vect3 cp1 = p1.toVect3().minus(c.toVect3()).normalize();
+		Vect3 cp2 = p2.toVect3().minus(c.toVect3()).normalize();
+		return cp1.scalar(n)*cp2.scalar(n) > 0;
+	}
+
 	public boolean hasAsVertex(Point point) {
 		return a.equals(point) || 
 			   b.equals(point) || 

@@ -24,7 +24,7 @@ public class Vect3 {
 	}
 
 	public double scalar(Vect3 v) {
-		return Math.sqrt(x*v.getX()+y*v.getY()+z*v.getZ());
+		return x*v.getX()+y*v.getY()+z*v.getZ();
 	}
 	
 	public Vect3 normalize() {
