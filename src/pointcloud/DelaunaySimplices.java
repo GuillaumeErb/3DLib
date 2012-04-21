@@ -1,4 +1,4 @@
-package common;
+package pointcloud;
 
 import io.OBJObject;
 
@@ -7,6 +7,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import common.Mesh;
+import common.Point;
+import common.Simplex;
+import common.Triangle;
 
 //TODO This class definitely needs illustrations !!!
 
@@ -58,7 +63,7 @@ public class DelaunaySimplices {
 			this.addPoint(point);
 		}
 		
-//		this.makeDisapear(this.getCurrent().getPoints());
+		this.makeDisapear(this.getCurrent().getPoints());
 	}
 	
 	

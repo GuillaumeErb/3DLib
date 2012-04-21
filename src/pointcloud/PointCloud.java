@@ -1,9 +1,14 @@
-package common;
+package pointcloud;
 
 import io.OBJReader;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import common.Mesh;
+import common.Point;
+import common.Simplex;
+import common.Vect3;
 
 public class PointCloud {
 
