@@ -44,24 +44,6 @@ public class Simplex {
 		alphaM.set(4, 3, d.getZ());
 		alphaM.set(4, 4, 1);
 				
-//		Matrix gammaM = new Matrix(4);
-//		gammaM.set(1, 1, a.getX()*a.getX() + a.getY()*a.getY() + a.getZ()*a.getZ());
-//		gammaM.set(1, 2, a.getX());
-//		gammaM.set(1, 3, a.getY());
-//		gammaM.set(1, 4, a.getZ());
-//		gammaM.set(2, 1, b.getX()*b.getX() + b.getY()*b.getY() + b.getZ()*b.getZ());
-//		gammaM.set(2, 2, b.getX());
-//		gammaM.set(2, 3, b.getY());
-//		gammaM.set(2, 4, b.getZ());
-//		gammaM.set(3, 1, c.getX()*c.getX() + c.getY()*c.getY() + c.getZ()*c.getZ());
-//		gammaM.set(3, 2, c.getX());
-//		gammaM.set(3, 3, c.getY());
-//		gammaM.set(3, 4, c.getZ());
-//		gammaM.set(4, 1, d.getX()*d.getX() + d.getY()*d.getY() + d.getZ()*d.getZ());
-//		gammaM.set(4, 2, d.getX());
-//		gammaM.set(4, 3, d.getY());
-//		gammaM.set(4, 4, d.getZ());
-				
 		Matrix dxM = new Matrix(4);
 		dxM.set(1, 1, a.getX()*a.getX() + a.getY()*a.getY() + a.getZ()*a.getZ());
 		dxM.set(1, 2, a.getY());
@@ -118,14 +100,11 @@ public class Simplex {
 		
 		
 		double alpha = alphaM.det();
-//		double gamma = gammaM.det();
 		double dx = dxM.det();
 		double dy = dyM.det();
 		double dz = dzM.det();
 		
 		Vect3 cs = (new Vect3(dx,dy,dz)).dividedBy(2*alpha);
-//		double r = Math.sqrt(dx*dx+dy*dy*dz*dz-4*alpha*gamma)/(2*Math.abs(alpha));
-		
 		
 		return new Sphere(new Point(cs), cs.minus(this.a.toVect3()).norm());
 	}
@@ -167,8 +146,6 @@ public class Simplex {
 			   sameSide(point, b, a, c, d) &&
 			   sameSide(point, c, a, b, d) &&
 			   sameSide(point, d, a, b, c) ;
-		
-		
 	}
 	
 	public static boolean sameSide(Point p1, Point p2, Point a, Point b, Point c) {

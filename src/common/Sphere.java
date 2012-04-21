@@ -33,6 +33,8 @@ public class Sphere {
 		this.radius = radius;
 	}
 	
-	
+	public Mesh toMesh() {
+		return null;
+	}
 	
 }

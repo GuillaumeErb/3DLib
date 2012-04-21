@@ -95,13 +95,7 @@ public class PointCloud {
 			}
 		}
 		
-		// We transform rectangles into a square
-//		double l = Math.max(Math.max(xu-xd, yu-yd), zu-zd);
-//		xu = xd + l;
-//		yu = yd + l;
-//		zu = zd + l;
-		
-		
+
 		Vect3 ddd = new Vect3(xd,yd,zd);
 		Vect3 ddu = new Vect3(xd,yd,zu);
 		Vect3 dud = new Vect3(xd,yu,zd);

@@ -38,7 +38,7 @@ public class DelaunaySimplices {
 	
 	
 	public DelaunaySimplices(Simplex simplex) {
-		this.setCurrent(simplex);
+		this.current = simplex;
 		this.neighbors = new ArrayList<DelaunaySimplices>();
 		this.points = new ArrayList<Point>();
 		this.points.add(simplex.getA());
@@ -63,7 +63,7 @@ public class DelaunaySimplices {
 			this.addPoint(point);
 		}
 		
-		this.makeDisapear(this.getCurrent().getPoints());
+		this.makeDisapear(this.current.getPoints());
 	}
 	
 	
@@ -71,7 +71,7 @@ public class DelaunaySimplices {
 		for(Point point : points) {
 			this.addPoint(point);
 		}
-		this.makeDisapear(this.getCurrent().getPoints());
+		this.makeDisapear(this.current.getPoints());
 		this.makeDisapear(virtualPoints);
 	}
 	
@@ -89,9 +89,9 @@ public class DelaunaySimplices {
 		Triangle candidate = null;
 		for(DelaunaySimplices ds : this.simplices) {
 			for(Point p : superPoints) {
-				if(ds.getCurrent().hasAsVertex(p)) {
+				if(ds.current.hasAsVertex(p)) {
 					i++;
-					candidate = ds.getCurrent().extractTriangle(p);
+					candidate = ds.current.extractTriangle(p);
 				}
 			}
 			if(i==1) {
@@ -100,7 +100,6 @@ public class DelaunaySimplices {
 			}
 		}
 		
-		
 		return mesh;
 	}
 	
@@ -108,7 +107,7 @@ public class DelaunaySimplices {
 		Set<DelaunaySimplices> toBeRemoved = new HashSet<DelaunaySimplices>();
 		for(Point point : rPoints) {
 			for(DelaunaySimplices simplex : this.simplices) {
-				if(simplex.getCurrent().hasAsVertex(point)) {
+				if(simplex.current.hasAsVertex(point)) {
 					toBeRemoved.add(simplex);
 				}
 			}
@@ -122,7 +121,7 @@ public class DelaunaySimplices {
 	
 	private DelaunaySimplices getNeighbor(Point pa, Point pb, Point pc) {
 		for(DelaunaySimplices ds : neighbors) {
-			if(ds.getCurrent().hasAsVertices(pa, pb, pc)) {
+			if(ds.current.hasAsVertices(pa, pb, pc)) {
 				return ds;
 			}
 		}
@@ -149,10 +148,10 @@ public class DelaunaySimplices {
 		}
 		
 		for(DelaunaySimplices ds : critical) {
-				Simplex s1 = new Simplex(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getC(), point);
-				Simplex s2 = new Simplex(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getD(), point);
-				Simplex s3 = new Simplex(ds.getCurrent().getA(), ds.getCurrent().getC(), ds.getCurrent().getD(), point);
-				Simplex s4 = new Simplex(ds.getCurrent().getB(), ds.getCurrent().getC(), ds.getCurrent().getD(), point);
+				Simplex s1 = new Simplex(ds.current.getA(), ds.current.getB(), ds.current.getC(), point);
+				Simplex s2 = new Simplex(ds.current.getA(), ds.current.getB(), ds.current.getD(), point);
+				Simplex s3 = new Simplex(ds.current.getA(), ds.current.getC(), ds.current.getD(), point);
+				Simplex s4 = new Simplex(ds.current.getB(), ds.current.getC(), ds.current.getD(), point);
 
 				DelaunaySimplices ds1 = new DelaunaySimplices(this.simplices, s1, points);
 				DelaunaySimplices ds2 = new DelaunaySimplices(this.simplices, s2, points);
@@ -164,10 +163,10 @@ public class DelaunaySimplices {
 				this.simplices.add(ds3);
 				this.simplices.add(ds4);
 
-				DelaunaySimplices dsabc = ds.getNeighbor(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getC());
-				DelaunaySimplices dsabd = ds.getNeighbor(ds.getCurrent().getA(), ds.getCurrent().getB(), ds.getCurrent().getD());
-				DelaunaySimplices dsacd = ds.getNeighbor(ds.getCurrent().getA(), ds.getCurrent().getC(), ds.getCurrent().getD());
-				DelaunaySimplices dsbcd = ds.getNeighbor(ds.getCurrent().getB(), ds.getCurrent().getC(), ds.getCurrent().getD());
+				DelaunaySimplices dsabc = ds.getNeighbor(ds.current.getA(), ds.current.getB(), ds.current.getC());
+				DelaunaySimplices dsabd = ds.getNeighbor(ds.current.getA(), ds.current.getB(), ds.current.getD());
+				DelaunaySimplices dsacd = ds.getNeighbor(ds.current.getA(), ds.current.getC(), ds.current.getD());
+				DelaunaySimplices dsbcd = ds.getNeighbor(ds.current.getB(), ds.current.getC(), ds.current.getD());
 				
 				if(dsabc != null) {
 					ds1.addNeighbors(dsabc);
@@ -213,7 +212,7 @@ public class DelaunaySimplices {
 		Collection<DelaunaySimplices> result = new ArrayList<DelaunaySimplices>();
 		
 		for(DelaunaySimplices ds : this.neighbors) {
-			if(/*!ds.equals(this) && */ds.getCurrent().circumSphereContains(point) >= 1) {
+			if(ds.current.circumSphereContains(point) >= 1) {
 				result.add(ds);
 			}
 		}
@@ -226,7 +225,7 @@ public class DelaunaySimplices {
 	
 	private DelaunaySimplices getContainingSimplex(Point point) {
 		for(DelaunaySimplices s : simplices) {
-			if(s.getCurrent().contains(point)) {
+			if(s.current.contains(point)) {
 				return s;
 			}
 		}
@@ -246,50 +245,28 @@ public class DelaunaySimplices {
 		
 		int[] face = {0,0,0};
 		for(DelaunaySimplices simplex : this.simplices) {
-			face[0] = pointsToInt.get(simplex.getCurrent().getA());
-			face[1] = pointsToInt.get(simplex.getCurrent().getB());
-			face[2] = pointsToInt.get(simplex.getCurrent().getC());
+			face[0] = pointsToInt.get(simplex.current.getA());
+			face[1] = pointsToInt.get(simplex.current.getB());
+			face[2] = pointsToInt.get(simplex.current.getC());
 			obj.addFace(face);
-			face[0] = pointsToInt.get(simplex.getCurrent().getA());
-			face[1] = pointsToInt.get(simplex.getCurrent().getB());
-			face[2] = pointsToInt.get(simplex.getCurrent().getD());
+			face[0] = pointsToInt.get(simplex.current.getA());
+			face[1] = pointsToInt.get(simplex.current.getB());
+			face[2] = pointsToInt.get(simplex.current.getD());
 			obj.addFace(face);
-			face[0] = pointsToInt.get(simplex.getCurrent().getA());
-			face[1] = pointsToInt.get(simplex.getCurrent().getC());
-			face[2] = pointsToInt.get(simplex.getCurrent().getD());
+			face[0] = pointsToInt.get(simplex.current.getA());
+			face[1] = pointsToInt.get(simplex.current.getC());
+			face[2] = pointsToInt.get(simplex.current.getD());
 			obj.addFace(face);
-			face[0] = pointsToInt.get(simplex.getCurrent().getB());
-			face[1] = pointsToInt.get(simplex.getCurrent().getC());
-			face[2] = pointsToInt.get(simplex.getCurrent().getD());
+			face[0] = pointsToInt.get(simplex.current.getB());
+			face[1] = pointsToInt.get(simplex.current.getC());
+			face[2] = pointsToInt.get(simplex.current.getD());
 			obj.addFace(face);
 		}
 		
 		return obj;
 	}
 	
-	public Simplex getCurrent() {
-		return current;
-	}
 
-	public void setCurrent(Simplex current) {
-		this.current = current;
-	}
-
-	public Collection<DelaunaySimplices> getSimplices() {
-		return simplices;
-	}
-
-	public Collection<Point> getPoints() {
-		return points;
-	}
-
-	public void setPoints(Collection<Point> points) {
-		this.points = points;
-	}
-
-	public Collection<DelaunaySimplices> getNeighbors() {
-		return neighbors;
-	}
 
 	public void addNeighbors(DelaunaySimplices simplex) {
 		this.neighbors.add(simplex);
