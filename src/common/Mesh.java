@@ -33,9 +33,9 @@ public class Mesh {
 		
 		int i = 1;
 		for(Triangle triangle : this.triangles) {
-			pointsToInt.put(triangle.a, i);
-			pointsToInt.put(triangle.b, i);
-			pointsToInt.put(triangle.c, i);
+			pointsToInt.put(triangle.getA(), i);
+			pointsToInt.put(triangle.getB(), i);
+			pointsToInt.put(triangle.getC(), i);
 			i++;
 		}
 		
@@ -45,9 +45,9 @@ public class Mesh {
 		
 		int[] face = {0,0,0};
 		for(Triangle triangle : this.triangles) {
-			face[0] = pointsToInt.get(triangle.a);
-			face[1] = pointsToInt.get(triangle.b);
-			face[2] = pointsToInt.get(triangle.c);
+			face[0] = pointsToInt.get(triangle.getA());
+			face[1] = pointsToInt.get(triangle.getB());
+			face[2] = pointsToInt.get(triangle.getC());
 			obj.addFace(face);
 		}
 		

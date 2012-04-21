@@ -1,10 +1,13 @@
 package common;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Triangle {
 
-	public Point a;
-	public Point b;
-	public Point c;
+	private Point a;
+	private Point b;
+	private Point c;
 	
 	/**
 	 * @param a
@@ -18,6 +21,14 @@ public class Triangle {
 		this.c = c;
 	}
 
+	public Collection<Point> getPoints() {
+		ArrayList<Point> list = new ArrayList<>();
+		list.add(a);
+		list.add(b);
+		list.add(c);
+		return list;
+	}
+	
 	public Point getA() {
 		return a;
 	}
@@ -40,6 +51,26 @@ public class Triangle {
 
 	public void setC(Point c) {
 		this.c = c;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((a == null) ? 0 : a.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Triangle other = (Triangle) obj;
+		return other.getPoints().containsAll(this.getPoints());
 	}
 	
 	

@@ -32,9 +32,6 @@ public class DelaunaySimplices {
 	private Collection<DelaunaySimplices> neighbors;
 	
 	
-	private DelaunaySimplices superSimplex;
-	
-	
 	public DelaunaySimplices(Simplex simplex) {
 		this.setCurrent(simplex);
 		this.neighbors = new ArrayList<DelaunaySimplices>();
@@ -61,7 +58,7 @@ public class DelaunaySimplices {
 			this.addPoint(point);
 		}
 		
-		this.makeDisapear(this.getCurrent().getPoints());
+//		this.makeDisapear(this.getCurrent().getPoints());
 	}
 	
 	

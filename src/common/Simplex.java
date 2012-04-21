@@ -26,18 +26,108 @@ public class Simplex {
 	}
 	
 	public Sphere circumSphere() {
-		Vect3 u = a.toVect3().minus(d.toVect3());
-		Vect3 v = b.toVect3().minus(d.toVect3());
-		Vect3 w = c.toVect3().minus(d.toVect3());
+		Matrix alphaM = new Matrix(4);
+		alphaM.set(1, 1, a.getX());
+		alphaM.set(1, 2, a.getY());
+		alphaM.set(1, 3, a.getZ());
+		alphaM.set(1, 4, 1);
+		alphaM.set(2, 1, b.getX());
+		alphaM.set(2, 2, b.getY());
+		alphaM.set(2, 3, b.getZ());
+		alphaM.set(2, 4, 1);
+		alphaM.set(3, 1, c.getX());
+		alphaM.set(3, 2, c.getY());
+		alphaM.set(3, 3, c.getZ());
+		alphaM.set(3, 4, 1);
+		alphaM.set(4, 1, d.getX());
+		alphaM.set(4, 2, d.getY());
+		alphaM.set(4, 3, d.getZ());
+		alphaM.set(4, 4, 1);
+				
+//		Matrix gammaM = new Matrix(4);
+//		gammaM.set(1, 1, a.getX()*a.getX() + a.getY()*a.getY() + a.getZ()*a.getZ());
+//		gammaM.set(1, 2, a.getX());
+//		gammaM.set(1, 3, a.getY());
+//		gammaM.set(1, 4, a.getZ());
+//		gammaM.set(2, 1, b.getX()*b.getX() + b.getY()*b.getY() + b.getZ()*b.getZ());
+//		gammaM.set(2, 2, b.getX());
+//		gammaM.set(2, 3, b.getY());
+//		gammaM.set(2, 4, b.getZ());
+//		gammaM.set(3, 1, c.getX()*c.getX() + c.getY()*c.getY() + c.getZ()*c.getZ());
+//		gammaM.set(3, 2, c.getX());
+//		gammaM.set(3, 3, c.getY());
+//		gammaM.set(3, 4, c.getZ());
+//		gammaM.set(4, 1, d.getX()*d.getX() + d.getY()*d.getY() + d.getZ()*d.getZ());
+//		gammaM.set(4, 2, d.getX());
+//		gammaM.set(4, 3, d.getY());
+//		gammaM.set(4, 4, d.getZ());
+				
+		Matrix dxM = new Matrix(4);
+		dxM.set(1, 1, a.getX()*a.getX() + a.getY()*a.getY() + a.getZ()*a.getZ());
+		dxM.set(1, 2, a.getY());
+		dxM.set(1, 3, a.getZ());
+		dxM.set(1, 4, 1);
+		dxM.set(2, 1, b.getX()*b.getX() + b.getY()*b.getY() + b.getZ()*b.getZ());
+		dxM.set(2, 2, b.getY());
+		dxM.set(2, 3, b.getZ());
+		dxM.set(2, 4, 1);
+		dxM.set(3, 1, c.getX()*c.getX() + c.getY()*c.getY() + c.getZ()*c.getZ());
+		dxM.set(3, 2, c.getY());
+		dxM.set(3, 3, c.getZ());
+		dxM.set(3, 4, 1);
+		dxM.set(4, 1, d.getX()*d.getX() + d.getY()*d.getY() + d.getZ()*d.getZ());
+		dxM.set(4, 2, d.getY());
+		dxM.set(4, 3, d.getZ());
+		dxM.set(4, 4, 1);
 		
-		double den = 2*u.scalar(v.cross(w));
+		Matrix dyM = new Matrix(4);
+		dyM.set(1, 1, a.getX()*a.getX() + a.getY()*a.getY() + a.getZ()*a.getZ());
+		dyM.set(1, 2, a.getX());
+		dyM.set(1, 3, a.getZ());
+		dyM.set(1, 4, 1);
+		dyM.set(2, 1, b.getX()*b.getX() + b.getY()*b.getY() + b.getZ()*b.getZ());
+		dyM.set(2, 2, b.getX());
+		dyM.set(2, 3, b.getZ());
+		dyM.set(2, 4, 1);
+		dyM.set(3, 1, c.getX()*c.getX() + c.getY()*c.getY() + c.getZ()*c.getZ());
+		dyM.set(3, 2, c.getX());
+		dyM.set(3, 3, c.getZ());
+		dyM.set(3, 4, 1);
+		dyM.set(4, 1, d.getX()*d.getX() + d.getY()*d.getY() + d.getZ()*d.getZ());
+		dyM.set(4, 2, d.getX());
+		dyM.set(4, 3, d.getZ());
+		dyM.set(4, 4, 1);
 		
-		Vect3 num =  v.cross(w).times(u.scalar(u))
-				   .plus(w.cross(u).times(v.scalar(v)))
-				   .plus(u.cross(v).times(w.scalar(w)));
+		Matrix dzM = new Matrix(4);
+		dzM.set(1, 1, a.getX()*a.getX() + a.getY()*a.getY() + a.getZ()*a.getZ());
+		dzM.set(1, 2, a.getX());
+		dzM.set(1, 3, a.getY());
+		dzM.set(1, 4, 1);
+		dzM.set(2, 1, b.getX()*b.getX() + b.getY()*b.getY() + b.getZ()*b.getZ());
+		dzM.set(2, 2, b.getX());
+		dzM.set(2, 3, b.getY());
+		dzM.set(2, 4, 1);
+		dzM.set(3, 1, c.getX()*c.getX() + c.getY()*c.getY() + c.getZ()*c.getZ());
+		dzM.set(3, 2, c.getX());
+		dzM.set(3, 3, c.getY());
+		dzM.set(3, 4, 1);
+		dzM.set(4, 1, d.getX()*d.getX() + d.getY()*d.getY() + d.getZ()*d.getZ());
+		dzM.set(4, 2, d.getX());
+		dzM.set(4, 3, d.getY());
+		dzM.set(4, 4, 1);
 		
-		return new Sphere(new Point(num.dividedBy(den)), 
-						  num.norm()/Math.abs(den));
+		
+		double alpha = alphaM.det();
+//		double gamma = gammaM.det();
+		double dx = dxM.det();
+		double dy = dyM.det();
+		double dz = dzM.det();
+		
+		Vect3 cs = (new Vect3(dx,dy,dz)).dividedBy(2*alpha);
+//		double r = Math.sqrt(dx*dx+dy*dy*dz*dz-4*alpha*gamma)/(2*Math.abs(alpha));
+		
+		
+		return new Sphere(new Point(cs), cs.minus(this.a.toVect3()).norm());
 	}
 	
 	public int circumSphereContains(Point point) {
@@ -73,19 +163,19 @@ public class Simplex {
 	}
 	
 	public boolean contains(Point point) {
-		return this.SameSide(point, a, b, c, d) &&
-			   this.SameSide(point, b, a, c, d) &&
-			   this.SameSide(point, c, a, b, d) &&
-			   this.SameSide(point, d, a, b, c) ;
+		return sameSide(point, a, b, c, d) &&
+			   sameSide(point, b, a, c, d) &&
+			   sameSide(point, c, a, b, d) &&
+			   sameSide(point, d, a, b, c) ;
 		
 		
 	}
 	
-	private boolean SameSide(Point p1, Point p2, Point a, Point b, Point c) {
+	public static boolean sameSide(Point p1, Point p2, Point a, Point b, Point c) {
 		Vect3 n = (a.toVect3().minus(c.toVect3())).cross(b.toVect3().minus(c.toVect3())).normalize();
 		Vect3 cp1 = p1.toVect3().minus(c.toVect3()).normalize();
 		Vect3 cp2 = p2.toVect3().minus(c.toVect3()).normalize();
-		return cp1.scalar(n)*cp2.scalar(n) > 0;
+		return cp1.scalar(n)*cp2.scalar(n) >= 0;
 	}
 
 	public boolean hasAsVertex(Point point) {
@@ -213,6 +303,11 @@ public class Simplex {
 		} else if (!d.equals(other.d))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Simplex [a=" + a + ", b=" + b + ", c=" + c + ", d=" + d + "]";
 	}
 	
 	

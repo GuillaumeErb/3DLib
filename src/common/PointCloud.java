@@ -2,6 +2,7 @@ package common;
 
 import io.OBJReader;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class PointCloud {
@@ -34,6 +35,19 @@ public class PointCloud {
 		}
 	}
 
+	
+	public DelaunaySimplices toSimplices(int i) {
+		int nbPoint = pointCloud.size();
+		if(nbPoint <= 3) {
+			return null;
+		} else {
+			Simplex superSimplex = this.getSurroundingSimplex();
+			DelaunaySimplices result = new DelaunaySimplices(superSimplex);
+			result.triangulate((new ArrayList<Point>(pointCloud)).subList(0, i));
+			return result;
+		}
+	}
+	
 	public Mesh toMesh() {
 		int nbPoint = pointCloud.size();
 		if(nbPoint <= 3) { //TODO handle the 3 case

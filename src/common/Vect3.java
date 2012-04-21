@@ -29,7 +29,11 @@ public class Vect3 {
 	
 	public Vect3 normalize() {
 		double norm = this.norm();
-		return new Vect3(x/norm, y/norm, z/norm);
+		if(norm != 0) {
+			return new Vect3(x/norm, y/norm, z/norm);
+		} else {
+			return new Vect3(0, 0, 0);
+		}
 	}
 	
 	public Vect3 cross(Vect3 v) {
