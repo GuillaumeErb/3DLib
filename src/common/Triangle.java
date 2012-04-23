@@ -72,6 +72,11 @@ public class Triangle {
 		Triangle other = (Triangle) obj;
 		return other.getPoints().containsAll(this.getPoints());
 	}
+
+	@Override
+	public String toString() {
+		return "Triangle [a=" + a + ", b=" + b + ", c=" + c + "]";
+	}
 	
 	
 	

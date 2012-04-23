@@ -38,38 +38,82 @@ public class Sphere {
 	}
 	
 	public Mesh toMesh(int segments, int rings) {
-		Vect3 x = new Vect3(1, 0, 0);
-		Vect3 y = new Vect3(0, 1, 0);
+		
+		Mesh mesh = new Mesh();
+		
 		Vect3 z = new Vect3(0, 0, 1);
 		
-		Vect3 CBot = this.center.toVect3().minus(z.times(radius));
+		Vect3 bottom = this.center.toVect3().minus(z.times(radius));
+		Vect3 top = this.center.toVect3().plus(z.times(radius));
 		
 
-		Vector<Point> previous = new Vector<Point>();
-		Vector<Point> current  = new Vector<Point>();
+		ArrayList<Point> previous;
+		ArrayList<Point> current;
+		ArrayList<Point> topPoints;
 		
-		for(int ring = 1; ring<=rings; ring++) {
-			Vect3 BO =  CBot.plus(CBot.times(ring/rings));
-			for(int segment = 1; segment<=segments-2; segment++) {
-				
-				
-				
-			}
+		Vect3 step = z.times(2*radius/rings);
+		
+		
+		
+		Vect3 center = bottom.plus(step);
+
+		previous = this.cut(new Point(center), segments);
+		for(int i = 1; i<=segments; i++) {
+			mesh.addTriangle(new Triangle(new Point(bottom), 
+					                      previous.get(i%segments), 
+					                      previous.get((i+1)%segments)));
 		}
-		return null;
+		
+		for(int k = 0; k<rings-2; k++) {
+			center = center.plus(step);
+			current = this.cut(new Point(center), segments);
+			for(int i = 1; i<=segments; i++) {
+				mesh.addTriangle(new Triangle(current.get(i%segments), 
+	                      					  previous.get(i%segments), 
+	                      					  previous.get((i+1)%segments)));
+				mesh.addTriangle(new Triangle(previous.get((i+1)%segments), 
+    					  					  current.get(i%segments), 
+    					  					  current.get((i+1)%segments)));
+			}
+			previous = current;
+		}
+		
+		for(int i = 1; i<=segments; i++) {
+			mesh.addTriangle(new Triangle(new Point(top), 
+					                      previous.get(i%segments), 
+					                      previous.get((i+1)%segments)));
+		}
+		
+		
+		
+		System.out.println("######################");
+		
+		for(Triangle t : mesh.getTriangles()) {
+			System.out.println(t);
+		}
+		
+		System.out.println("######################");
+		
+		return mesh;
 	}
 	
 	private ArrayList<Point> cut(Point p, int segments) {
+		System.out.println("----------------");
 		ArrayList<Point> res = new ArrayList<Point>();
-		Vect3 x = new Vect3(1, 0, 0);
-		Vect3 y = new Vect3(0, 1, 0);
 		double h  = p.toVect3().minus(center.toVect3()).norm();
-		double r = Math.sqrt(radius*radius + h*h);
+		double r = Math.sqrt(radius*radius - h*h);
 		for(int i = 0; i<segments; i++) {
-			res.add(new Point(p.getX()+Math.cos(2*Math.PI*i/segments)*r, p.getY()+Math.sin(2*Math.PI*i/segments)*r, p.getZ()));
+			Point point = new Point(p.getX()+Math.cos(2*Math.PI*i/segments)*r,
+					  				p.getY()+Math.sin(2*Math.PI*i/segments)*r,
+					  				p.getZ());
+			System.out.println(point);
+			res.add(point);
 		}
 		
 		return res;
 	}
+	
+	
+	
 	
 }

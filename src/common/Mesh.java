@@ -30,16 +30,25 @@ public class Mesh {
 	public OBJObject getOBJObject(String name) {
 		OBJObject obj = new OBJObject(name);
 		HashMap<Point, Integer> pointsToInt = new HashMap<Point, Integer>();
+		ArrayList<Point> points = new ArrayList<Point>();
 		
 		int i = 1;
 		for(Triangle triangle : this.triangles) {
-			pointsToInt.put(triangle.getA(), i);
-			pointsToInt.put(triangle.getB(), i);
-			pointsToInt.put(triangle.getC(), i);
-			i++;
+			if(!pointsToInt.containsKey(triangle.getA())) {
+				pointsToInt.put(triangle.getA(), i++);
+				points.add(triangle.getA());
+			}
+			if(!pointsToInt.containsKey(triangle.getB())) {
+				pointsToInt.put(triangle.getB(), i++);
+				points.add(triangle.getB());
+			}
+			if(!pointsToInt.containsKey(triangle.getC())) {
+				pointsToInt.put(triangle.getC(), i++);
+				points.add(triangle.getC());
+			}
 		}
 		
-		for(Point point : pointsToInt.keySet()) {
+		for(Point point : points) {
 			obj.addVertex(point.getX(), point.getY(), point.getZ());
 		}
 		
@@ -52,6 +61,10 @@ public class Mesh {
 		}
 		
 		return obj;
+	}
+	
+	public Collection<Triangle> getTriangles() {
+		return this.triangles;
 	}
 	
 }

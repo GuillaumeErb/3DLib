@@ -21,12 +21,16 @@ public class OBJBuilder {
 	public void save() {
 		FileWriter writer;
 		try {
-			writer = new FileWriter(fileName + "_delaunay.obj");
+			writer = new FileWriter(fileName + "_.obj");
 			writer.write(builder.toString());
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String getBuilder() {
+		return builder.toString();
 	}
 	
 }
