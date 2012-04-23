@@ -27,12 +27,12 @@ public class Mesh {
 		triangles.add(t);
 	}
 	
-	public OBJObject getOBJObject(String name) {
+	public OBJObject getOBJObject(String name, int iInit) {
 		OBJObject obj = new OBJObject(name);
 		HashMap<Point, Integer> pointsToInt = new HashMap<Point, Integer>();
 		ArrayList<Point> points = new ArrayList<Point>();
 		
-		int i = 1;
+		int i = iInit;
 		for(Triangle triangle : this.triangles) {
 			if(!pointsToInt.containsKey(triangle.getA())) {
 				pointsToInt.put(triangle.getA(), i++);
@@ -60,6 +60,7 @@ public class Mesh {
 			obj.addFace(face);
 		}
 		
+		obj.iPoints = i;
 		return obj;
 	}
 	

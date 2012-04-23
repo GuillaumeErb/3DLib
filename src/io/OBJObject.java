@@ -36,6 +36,8 @@ public class OBJObject {
 	 */
 	private StringBuilder faces;
 	
+	public int iPoints;
+	
 	
 	public OBJObject(String objectName) {
 		this.objectName = objectName;

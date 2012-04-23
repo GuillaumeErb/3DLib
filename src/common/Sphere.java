@@ -1,8 +1,6 @@
 package common;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Vector;
 
 public class Sphere {
 	
@@ -14,7 +12,6 @@ public class Sphere {
 	 * @param radius
 	 */
 	public Sphere(Point center, double radius) {
-		super();
 		this.center = center;
 		this.radius = radius;
 	}
@@ -49,12 +46,9 @@ public class Sphere {
 
 		ArrayList<Point> previous;
 		ArrayList<Point> current;
-		ArrayList<Point> topPoints;
 		
 		Vect3 step = z.times(2*radius/rings);
-		
-		
-		
+				
 		Vect3 center = bottom.plus(step);
 
 		previous = this.cut(new Point(center), segments);
@@ -84,21 +78,10 @@ public class Sphere {
 					                      previous.get((i+1)%segments)));
 		}
 		
-		
-		
-		System.out.println("######################");
-		
-		for(Triangle t : mesh.getTriangles()) {
-			System.out.println(t);
-		}
-		
-		System.out.println("######################");
-		
 		return mesh;
 	}
 	
 	private ArrayList<Point> cut(Point p, int segments) {
-		System.out.println("----------------");
 		ArrayList<Point> res = new ArrayList<Point>();
 		double h  = p.toVect3().minus(center.toVect3()).norm();
 		double r = Math.sqrt(radius*radius - h*h);
@@ -106,7 +89,6 @@ public class Sphere {
 			Point point = new Point(p.getX()+Math.cos(2*Math.PI*i/segments)*r,
 					  				p.getY()+Math.sin(2*Math.PI*i/segments)*r,
 					  				p.getZ());
-			System.out.println(point);
 			res.add(point);
 		}
 		

@@ -210,12 +210,34 @@ public class DelaunaySimplices {
 	
 	private Collection<DelaunaySimplices> getCriticalSimplices(Point point) {
 		Collection<DelaunaySimplices> result = new ArrayList<DelaunaySimplices>();
+		Collection<Simplex> visited = new ArrayList<Simplex>();
+		visited.add(this.current);
 		
-		for(DelaunaySimplices ds : this.neighbors) {
-			if(ds.current.circumSphereContains(point) >= 1) {
-				result.add(ds);
+		Collection<DelaunaySimplices> critical = new ArrayList<DelaunaySimplices>();
+		Collection<DelaunaySimplices> tmpCritical = new ArrayList<DelaunaySimplices>();
+		critical.add(this);
+		
+		while(!critical.isEmpty()) {
+			for(DelaunaySimplices criticalDs : critical) {
+				
+				for(DelaunaySimplices ds : criticalDs.neighbors) {
+					if(!visited.contains(ds.current)) {
+						visited.add(ds.current);
+						if(ds.current.circumSphereContains(point) >= 1) {
+							result.add(ds);
+							tmpCritical.add(ds);
+						}
+					}
+				}
+
 			}
+			critical.clear();
+			critical.addAll(tmpCritical);
+			tmpCritical.clear();
 		}
+		
+		
+		
 		
 		result.add(this);
 		
@@ -232,11 +254,11 @@ public class DelaunaySimplices {
 		return null;
 	}
 	
-	public OBJObject getOBJObject(String name) {
+	public OBJObject getOBJObject(String name, int iInit) {
 		OBJObject obj = new OBJObject(name);
 		HashMap<Point, Integer> pointsToInt = new HashMap<Point, Integer>();
 		
-		int i = 1;
+		int i = iInit;
 		for(Point point : this.points) {
 			pointsToInt.put(point, i);
 			obj.addVertex(point.getX(), point.getY(), point.getZ());
@@ -263,6 +285,7 @@ public class DelaunaySimplices {
 			obj.addFace(face);
 		}
 		
+		obj.iPoints = i;
 		return obj;
 	}
 	
@@ -270,6 +293,10 @@ public class DelaunaySimplices {
 
 	public void addNeighbors(DelaunaySimplices simplex) {
 		this.neighbors.add(simplex);
+	}
+	
+	public Simplex getCurrent() {
+		return this.current;
 	}
 	
 }
