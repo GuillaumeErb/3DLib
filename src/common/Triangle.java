@@ -21,6 +21,13 @@ public class Triangle {
 		this.c = c;
 	}
 
+	public Triangle(Collection<Point> points) {
+		Point[] vpoints = (Point[]) points.toArray();
+		a = vpoints[0];
+		b = vpoints[1];
+		c = vpoints[2];
+	}
+
 	public Collection<Point> getPoints() {
 		ArrayList<Point> list = new ArrayList<>();
 		list.add(a);

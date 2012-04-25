@@ -25,6 +25,13 @@ public class Simplex {
 		this.d = d;
 	}
 	
+	public Simplex(Triangle t, Point p) {
+		this.a = t.getA();
+		this.b = t.getB();
+		this.c = t.getC();
+		this.d = p;
+	}
+	
 	public Sphere circumSphere() {
 		Matrix alphaM = new Matrix(4);
 		alphaM.set(1, 1, a.getX());
@@ -203,6 +210,24 @@ public class Simplex {
 		} else if(this.d.equals(point)) {
 			return new Triangle(a,b,c);
 		} else return null;
+	}
+	
+	public Triangle getCommonFace(Simplex simplex) {
+		Collection<Point> points = this.getCommonPoints(simplex);
+		if(points.size() == 3) {
+			return new Triangle(points);
+		} else {
+			return null;
+		}
+	}
+	
+	public Collection<Triangle> getTriangles() {
+		Collection<Triangle> res = new ArrayList<Triangle>();
+		res.add(new Triangle(a,b,c));
+		res.add(new Triangle(a,b,d));
+		res.add(new Triangle(a,c,d));
+		res.add(new Triangle(b,c,d));
+		return res;
 	}
 	
 	public Point getA() {

@@ -62,7 +62,6 @@ public class DelaunaySimplices {
 		for(Point point : points) {
 			this.addPoint(point);
 		}
-		
 		this.makeDisapear(this.current.getPoints());
 	}
 	
@@ -103,6 +102,80 @@ public class DelaunaySimplices {
 		return mesh;
 	}
 	
+	private void addPoint(Point point) {
+		
+		this.points.add(point);
+		
+		DelaunaySimplices dsim = this.getContainingSimplex(point);
+		Collection<DelaunaySimplices> critical = dsim.getCriticalSimplices(point);
+	
+		for(DelaunaySimplices ds : critical) {
+			ds.remove();
+		}
+		
+
+		System.out.println(point + " added.");
+	}
+
+
+	private Collection<DelaunaySimplices> getCriticalSimplices(Point point) {
+		Collection<DelaunaySimplices> result = new ArrayList<DelaunaySimplices>();
+
+		for(DelaunaySimplices ds : this.simplices) {
+			if(ds.current.circumSphereContains(point) >= 1) {
+				result.add(ds);
+			}
+		}
+
+		return result;
+	}			
+	
+	
+	private Collection<Triangle> getExtremeTriangles(Point point) {
+		Collection<DelaunaySimplices> simplices = this.getCriticalSimplices(point);
+		HashSet<Triangle> triangles = new HashSet<Triangle>();
+		
+		for(DelaunaySimplices ds : simplices) {
+			triangles.addAll(ds.current.getTriangles());
+		}
+		
+		for(DelaunaySimplices ds : simplices) {
+			for(DelaunaySimplices dsin : simplices) {
+				triangles.remove(ds.current.getCommonFace(dsin.current));
+			}
+		}
+		
+		return triangles;
+		
+	}
+	
+
+	private static Collection<Triangle> getDistinctFace(Collection<DelaunaySimplices> simplices) {
+		Collection<Triangle> triangles = new ArrayList<Triangle>();
+		
+		
+		return triangles;
+	}
+	
+
+	private DelaunaySimplices getContainingSimplex(Point point) {
+		for(DelaunaySimplices s : simplices) {
+			if(s.current.contains(point)) {
+				return s;
+			}
+		}
+		return null;
+	}
+
+
+	private void remove() {
+		this.simplices.remove(this);
+		for(DelaunaySimplices ds : this.neighbors) {
+			ds.neighbors.remove(this);
+		}
+	}
+
+
 	private void makeDisapear(Collection<Point> rPoints) {
 		Set<DelaunaySimplices> toBeRemoved = new HashSet<DelaunaySimplices>();
 		for(Point point : rPoints) {
@@ -119,6 +192,17 @@ public class DelaunaySimplices {
 	}
 	
 	
+	public boolean checkDelaunayCriteria() {
+		for(DelaunaySimplices ds : simplices) {
+			for(Point p : this.points) {
+				if(ds.current.circumSphereContains(p) != 1)
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	
 	private DelaunaySimplices getNeighbor(Point pa, Point pb, Point pc) {
 		for(DelaunaySimplices ds : neighbors) {
 			if(ds.current.hasAsVertices(pa, pb, pc)) {
@@ -127,131 +211,10 @@ public class DelaunaySimplices {
 		}
 		return null;
 	}
-	
-	private void remove() {
-		this.simplices.remove(this);
-		for(DelaunaySimplices ds : this.neighbors) {
-			ds.neighbors.remove(this);
-		}
-	}
-	
-	
-	private void addPoint(Point point) {
-		
-		this.points.add(point);
-		
-		DelaunaySimplices dsim = this.getContainingSimplex(point);
-		Collection<DelaunaySimplices> critical = dsim.getCriticalSimplices(point);
 
-		for(DelaunaySimplices ds : critical) {
-			ds.remove();
-		}
-		
-		for(DelaunaySimplices ds : critical) {
-				Simplex s1 = new Simplex(ds.current.getA(), ds.current.getB(), ds.current.getC(), point);
-				Simplex s2 = new Simplex(ds.current.getA(), ds.current.getB(), ds.current.getD(), point);
-				Simplex s3 = new Simplex(ds.current.getA(), ds.current.getC(), ds.current.getD(), point);
-				Simplex s4 = new Simplex(ds.current.getB(), ds.current.getC(), ds.current.getD(), point);
 
-				DelaunaySimplices ds1 = new DelaunaySimplices(this.simplices, s1, points);
-				DelaunaySimplices ds2 = new DelaunaySimplices(this.simplices, s2, points);
-				DelaunaySimplices ds3 = new DelaunaySimplices(this.simplices, s3, points);
-				DelaunaySimplices ds4 = new DelaunaySimplices(this.simplices, s4, points);
-
-				this.simplices.add(ds1);
-				this.simplices.add(ds2);
-				this.simplices.add(ds3);
-				this.simplices.add(ds4);
-
-				DelaunaySimplices dsabc = ds.getNeighbor(ds.current.getA(), ds.current.getB(), ds.current.getC());
-				DelaunaySimplices dsabd = ds.getNeighbor(ds.current.getA(), ds.current.getB(), ds.current.getD());
-				DelaunaySimplices dsacd = ds.getNeighbor(ds.current.getA(), ds.current.getC(), ds.current.getD());
-				DelaunaySimplices dsbcd = ds.getNeighbor(ds.current.getB(), ds.current.getC(), ds.current.getD());
-				
-				if(dsabc != null) {
-					ds1.addNeighbors(dsabc);
-					dsabc.addNeighbors(ds1);
-				}
-				ds1.addNeighbors(ds2);
-				ds1.addNeighbors(ds3);
-				ds1.addNeighbors(ds4);
-				
-
-				if(dsabd != null) {
-					ds2.addNeighbors(dsabd);
-					dsabd.addNeighbors(ds2);
-				}
-				ds2.addNeighbors(ds1);
-				ds2.addNeighbors(ds3);
-				ds2.addNeighbors(ds4);
-				
-
-				if(dsacd != null) {
-					ds3.addNeighbors(dsacd);
-					dsacd.addNeighbors(ds3);
-				}
-				ds3.addNeighbors(ds1);
-				ds3.addNeighbors(ds2);
-				ds3.addNeighbors(ds4);
-				
-				
-				if(dsbcd != null) {
-					ds4.addNeighbors(dsbcd);
-					dsbcd.addNeighbors(ds4);
-				}
-				ds4.addNeighbors(ds1);
-				ds4.addNeighbors(ds2);
-				ds4.addNeighbors(ds3);
-				
-		}
-		System.out.println(point + " added.");
-	}
-	
-	
-	private Collection<DelaunaySimplices> getCriticalSimplices(Point point) {
-		Collection<DelaunaySimplices> result = new ArrayList<DelaunaySimplices>();
-		Collection<Simplex> visited = new ArrayList<Simplex>();
-		visited.add(this.current);
-		
-		Collection<DelaunaySimplices> critical = new ArrayList<DelaunaySimplices>();
-		Collection<DelaunaySimplices> tmpCritical = new ArrayList<DelaunaySimplices>();
-		critical.add(this);
-		
-		while(!critical.isEmpty()) {
-			for(DelaunaySimplices criticalDs : critical) {
-				
-				for(DelaunaySimplices ds : criticalDs.neighbors) {
-					if(!visited.contains(ds.current)) {
-						visited.add(ds.current);
-						if(ds.current.circumSphereContains(point) >= 1) {
-							result.add(ds);
-							tmpCritical.add(ds);
-						}
-					}
-				}
-
-			}
-			critical.clear();
-			critical.addAll(tmpCritical);
-			tmpCritical.clear();
-		}
-		
-		
-		
-		
-		result.add(this);
-		
-		return result;
-	}
-	
-	
-	private DelaunaySimplices getContainingSimplex(Point point) {
-		for(DelaunaySimplices s : simplices) {
-			if(s.current.contains(point)) {
-				return s;
-			}
-		}
-		return null;
+	public void addNeighbors(DelaunaySimplices simplex) {
+		this.neighbors.add(simplex);
 	}
 	
 	public OBJObject getOBJObject(String name, int iInit) {
@@ -288,13 +251,8 @@ public class DelaunaySimplices {
 		obj.iPoints = i;
 		return obj;
 	}
-	
 
 
-	public void addNeighbors(DelaunaySimplices simplex) {
-		this.neighbors.add(simplex);
-	}
-	
 	public Simplex getCurrent() {
 		return this.current;
 	}
