@@ -3,6 +3,7 @@ package common;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Simplex {
 	
@@ -113,7 +114,14 @@ public class Simplex {
 		
 		Vect3 cs = (new Vect3(dx,dy,dz)).dividedBy(2*alpha);
 		
-		return new Sphere(new Point(cs), cs.minus(this.a.toVect3()).norm());
+		double radius = cs.minus(this.a.toVect3()).norm();
+		radius = (radius != radius) ? Double.MAX_VALUE : radius;
+		
+		return new Sphere(new Point(cs), radius);
+	}
+	
+	public double getCircumRadius() {
+		return this.circumSphere().getRadius();
 	}
 	
 	public int circumSphereContains(Point point) {
@@ -310,6 +318,15 @@ public class Simplex {
 	@Override
 	public String toString() {
 		return "Simplex [a=" + a + ", b=" + b + ", c=" + c + ", d=" + d + "]";
+	}
+
+	public Set<Triangle> getFaces() {
+		Set<Triangle> res = new HashSet<Triangle>();
+		res.add(new Triangle(a,b,c));
+		res.add(new Triangle(a,b,d));
+		res.add(new Triangle(a,c,d));
+		res.add(new Triangle(b,c,d));
+		return res;
 	}
 	
 	

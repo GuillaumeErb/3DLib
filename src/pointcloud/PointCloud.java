@@ -28,26 +28,26 @@ public class PointCloud {
 		this.pointCloud = pointCloud;
 	}
 	
-	public DelaunaySimplices toSimplices() {
+	public DelaunayNaive toSimplices() {
 		int nbPoint = pointCloud.size();
 		if(nbPoint <= 3) {
 			return null;
 		} else {
 			Simplex superSimplex = this.getSurroundingSimplex();
-			DelaunaySimplices result = new DelaunaySimplices(superSimplex);
+			DelaunayNaive result = new DelaunayNaive(superSimplex);
 			result.triangulate(pointCloud);
 			return result;
 		}
 	}
 
 	
-	public DelaunaySimplices toSimplices(int i) {
+	public DelaunayNaive toSimplices(int i) {
 		int nbPoint = pointCloud.size();
 		if(nbPoint <= 3) {
 			return null;
 		} else {
 			Simplex superSimplex = this.getSurroundingSimplex();
-			DelaunaySimplices result = new DelaunaySimplices(superSimplex);
+			DelaunayNaive result = new DelaunayNaive(superSimplex);
 			result.triangulate((new ArrayList<Point>(pointCloud)).subList(0, i));
 			return result;
 		}
@@ -59,7 +59,7 @@ public class PointCloud {
 			return null;
 		} else {
 			Simplex superSimplex = this.getSurroundingSimplex();
-			DelaunaySimplices result = new DelaunaySimplices(superSimplex);
+			DelaunayNaive result = new DelaunayNaive(superSimplex);
 			return result.transformToMesh(pointCloud);
 		}
 	}

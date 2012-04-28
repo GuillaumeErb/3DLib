@@ -36,6 +36,14 @@ public class Triangle {
 		return list;
 	}
 	
+	public double getCircumRadius() {
+		double x = a.toVect3().minus(b.toVect3()).norm();
+		double y = a.toVect3().minus(c.toVect3()).norm();
+		double z = b.toVect3().minus(c.toVect3()).norm();
+		
+		return (x*y*z)/Math.sqrt((x+y+z)*(y+z-x)*(z+x-y)*(x+y-z));
+	}
+	
 	public Point getA() {
 		return a;
 	}
@@ -83,6 +91,10 @@ public class Triangle {
 	@Override
 	public String toString() {
 		return "Triangle [a=" + a + ", b=" + b + ", c=" + c + "]";
+	}
+
+	public boolean hasAsVertex(Point pp) {
+		return pp.equals(a) || pp.equals(b) || pp.equals(c);
 	}
 	
 	

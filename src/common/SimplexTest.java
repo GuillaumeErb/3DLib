@@ -30,11 +30,11 @@ public class SimplexTest {
 		double rc = (s.getCenter().toVect3().minus(simplex.getC().toVect3())).norm();
 		double rd = (s.getCenter().toVect3().minus(simplex.getD().toVect3())).norm();
 		
-//		System.out.println(ra);
-//		System.out.println(rb);
-//		System.out.println(rc);
-//		System.out.println(rd);
-//		System.out.println(s.getRadius());
+		System.out.println(ra);
+		System.out.println(rb);
+		System.out.println(rc);
+		System.out.println(rd);
+		System.out.println(s.getRadius());
 		
 		assertTrue(ra == rb);
 		assertTrue(rb == rc);
