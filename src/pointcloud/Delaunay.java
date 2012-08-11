@@ -42,7 +42,11 @@ public class Delaunay {
 		objBuilder.save();
 	}
 
-	private static Set<Simplex> deWall(Set<Point> p, Set<Triangle> afl) {
+	public static Set<Simplex> deWall(Set<Point> p, Set<Triangle> afl) {
+		return Delaunay.deWall(p, afl, 0);
+	}
+	
+	private static Set<Simplex> deWall(Set<Point> p, Set<Triangle> afl, int axis) {
 		
 		System.out.println("deWall");
 		
@@ -56,7 +60,7 @@ public class Delaunay {
 		
 		Set<Point> p1 = new HashSet<Point>();
 		Set<Point> p2 = new HashSet<Point>();
-		pointSetPartition(p, alpha, p1, p2);
+		pointSetPartition(p, alpha, p1, p2, (axis+1)%3);
 		
 		/* Simplex Wall construction */
 		if(afl.isEmpty()) {
@@ -79,7 +83,9 @@ public class Delaunay {
 		
 		while(!aflAlpha.isEmpty()) {
 			f0 = extract(aflAlpha);
+			System.out.println("f0: " + f0);
 			t = makeSimplex(f0, p);
+			System.out.println("t: " + t);
 			if(t != null) {
 				sigma.add(t);
 				for(Triangle f1 : t.getFaces()) {
@@ -96,7 +102,11 @@ public class Delaunay {
 					}
 				}
 			}
+			System.out.println(aflAlpha.size());
+			System.out.println(aflAlpha);
 		}
+		
+		System.out.println(afl1.size() + " " + afl2.size());
 		
 		/*Recursive Triangulation*/
 		if(!afl1.isEmpty()) {
@@ -111,7 +121,7 @@ public class Delaunay {
 
 	
 	private static void pointSetPartition(Set<Point> p, Plane alpha,
-			Set<Point> p1, Set<Point> p2) {
+			Set<Point> p1, Set<Point> p2, int axis) {
 		
 		Vect3 v = new Vect3(0,0,0);
 		for(Point po : p) {
@@ -119,13 +129,23 @@ public class Delaunay {
 		}
 		Point center = new Point(v.dividedBy(p.size()));
 		
-		alpha.setFirstVector(new Vect3(1,0,0));
-		alpha.setSecondVector(new Vect3(0,1,0));
-		alpha.setPoint(center);
+		switch(axis) {
+		case 0:
+			//alpha.setFirstVector(new Vect3(1,0,0));
+			//alpha.setSecondVector(new Vect3(0,1,0));
+			alpha.setNormal(new Vect3(0,0,1));
+		case 1:
+			//alpha.setFirstVector(new Vect3(1,0,0));
+			//alpha.setSecondVector(new Vect3(0,0,1));
+		case 2:
+			//alpha.setFirstVector(new Vect3(0,1,0));
+			//alpha.setSecondVector(new Vect3(0,0,1));
+		}
 		
-		Vect3 normal = alpha.getFirstVector().cross(alpha.getSecondVector()); 
+		alpha.setPoint(center);
+		 
 		for(Point po : p) {
-			if(normal.scalar(po.toVect3().minus(alpha.getPoint().toVect3())) > 0) {
+			if(alpha.getNormal().scalar(po.toVect3().minus(alpha.getPoint().toVect3())) > 0) {
 				p1.add(po);
 			} else {
 				p2.add(po);
@@ -248,12 +268,13 @@ public class Delaunay {
 			for(Point pp : p) {
 				if(!f.hasAsVertex(pp)) {
 					double tmpDistance = dd(f,pp);
-					if(tmpDistance <= distance) {
+					if(tmpDistance <= distance/* && tmpDistance > 0*/) {
 						distance = tmpDistance;
 						point = pp;
 					}
 				}
 			}
+			assert !f.planeContains(point);
 			return new Simplex(f,point);
 		}
 		return null;
@@ -269,6 +290,7 @@ public class Delaunay {
 			aflAlpha.add(f);
 		}
 	}
+	
 	
 	public static OBJObject getOBJObject(String name, int iInit, Collection<Simplex> simplices) {
 		OBJObject obj = new OBJObject(name);

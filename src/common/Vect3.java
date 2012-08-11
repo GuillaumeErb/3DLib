@@ -72,6 +72,13 @@ public class Vect3 {
 			             z/d);
 	}
 	
+	public boolean colinear(Vect3 v) {
+		Vect3 tn = this.normalize();
+		Vect3 vn = this.normalize();
+		double c = tn.scalar(vn);
+		return c == 1 || c == -1;
+	}
+	
 	public double getX() {
 		return x;
 	}

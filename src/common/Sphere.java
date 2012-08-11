@@ -2,10 +2,11 @@ package common;
 
 import java.util.ArrayList;
 
+
 public class Sphere {
 	
-	private Point center;
-	private double radius;
+	protected Point center;
+	protected double radius;
 	
 	/**
 	 * @param center

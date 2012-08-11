@@ -40,6 +40,89 @@ public class SimplexTest {
 		assertTrue(rb == rc);
 		assertTrue(rc == rd);
 		assertTrue(rd == s.getRadius());
+		
+		/***********************************/
+		System.out.println("************************");
+		
+		Point a1 = new Point(-1,-5,0);
+		Point b1 = new Point(5,1,42);
+		Point c1 = new Point(1,-6,0);
+		Point d1 = new Point(2,0,1);
+		
+		Simplex simplex1 = new Simplex(a1,b1,c1,d1);
+		
+		Sphere s1 = simplex1.circumSphere();
+		double ra1 = (s1.getCenter().toVect3().minus(simplex1.getA().toVect3())).norm();
+		double rb1 = (s1.getCenter().toVect3().minus(simplex1.getB().toVect3())).norm();
+		double rc1 = (s1.getCenter().toVect3().minus(simplex1.getC().toVect3())).norm();
+		double rd1 = (s1.getCenter().toVect3().minus(simplex1.getD().toVect3())).norm();
+		
+				
+		System.out.println(ra1);
+		System.out.println(rb1);
+		System.out.println(rc1);
+		System.out.println(rd1);
+		System.out.println(s1.getRadius());
+		
+		assertTrue(ra1 == rb1);
+		assertTrue(rb1 == rc1);
+		assertTrue(rc1 == rd1);
+		assertTrue(rd1 == s1.getRadius());
+		
+		
+		/***********************************/
+		System.out.println("************************");
+		
+		Point a2 = new Point(0,0,5);
+		Point b2 = new Point(1,0,4);
+		Point c2 = new Point(5,0,1);
+		Point d2 = new Point(1,0,1);
+		
+		Simplex simplex2 = new Simplex(a2,b2,c2,d2);
+		
+		Sphere s2 = simplex2.circumSphere();
+		double ra2 = (s2.getCenter().toVect3().minus(simplex2.getA().toVect3())).norm();
+		double rb2 = (s2.getCenter().toVect3().minus(simplex2.getB().toVect3())).norm();
+		double rc2 = (s2.getCenter().toVect3().minus(simplex2.getC().toVect3())).norm();
+		double rd2 = (s2.getCenter().toVect3().minus(simplex2.getD().toVect3())).norm();
+		
+				
+		System.out.println(ra2);
+		System.out.println(rb2);
+		System.out.println(rc2);
+		System.out.println(rd2);
+		System.out.println(s2.getRadius());
+		
+		assertTrue(s2.getRadius() == Double.MAX_VALUE);
+		
+		/***********************************/
+		System.out.println("************************");
+		
+		Point a3 = new Point(-1,0,1);
+		Point b3 = new Point(0,1,345);
+		Point c3 = new Point(0,0,619);
+		Point d3 = new Point(0,0,78);
+		
+		Simplex simplex3 = new Simplex(a3,b3,c3,d3);
+		
+		Sphere s3 = simplex3.circumSphere();
+		double ra3 = (s3.getCenter().toVect3().minus(simplex3.getA().toVect3())).norm();
+		double rb3 = (s3.getCenter().toVect3().minus(simplex3.getB().toVect3())).norm();
+		double rc3 = (s3.getCenter().toVect3().minus(simplex3.getC().toVect3())).norm();
+		double rd3 = (s3.getCenter().toVect3().minus(simplex3.getD().toVect3())).norm();
+		
+				
+		System.out.println(ra3);
+		System.out.println(rb3);
+		System.out.println(rc3);
+		System.out.println(rd3);
+		System.out.println(s3.getRadius());
+		
+		assertTrue(ra3 == rb3);
+		assertTrue(rb3 == rc3);
+		assertTrue(rc3 == rd3);
+		assertTrue(rd3 == s3.getRadius());
+		
 	}
 
 	@Test

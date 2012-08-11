@@ -109,7 +109,7 @@ public class Simplex {
 		
 		double alpha = alphaM.det();
 		double dx = dxM.det();
-		double dy = dyM.det();
+		double dy = -dyM.det();
 		double dz = dzM.det();
 		
 		Vect3 cs = (new Vect3(dx,dy,dz)).dividedBy(2*alpha);
@@ -292,32 +292,13 @@ public class Simplex {
 		if (getClass() != obj.getClass())
 			return false;
 		Simplex other = (Simplex) obj;
-		if (a == null) {
-			if (other.a != null)
-				return false;
-		} else if (!a.equals(other.a))
-			return false;
-		if (b == null) {
-			if (other.b != null)
-				return false;
-		} else if (!b.equals(other.b))
-			return false;
-		if (c == null) {
-			if (other.c != null)
-				return false;
-		} else if (!c.equals(other.c))
-			return false;
-		if (d == null) {
-			if (other.d != null)
-				return false;
-		} else if (!d.equals(other.d))
-			return false;
-		return true;
+		
+		return this.getPoints().containsAll(other.getPoints());
 	}
 
 	@Override
 	public String toString() {
-		return "Simplex [a=" + a + ", b=" + b + ", c=" + c + ", d=" + d + "]";
+		return "[" + a + ", " + b + ", " + c + ", " + d + "]";
 	}
 
 	public Set<Triangle> getFaces() {

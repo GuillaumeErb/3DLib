@@ -1,13 +1,16 @@
-package common;
+package raytracer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import common.Point;
+import common.Vect3;
 
 import materials.Material;
 
 import raytracer.Intersection;
 
-public class Triangle {
+public class Triangle extends Primitive {
 
 	private Point a;
 	private Point b;
@@ -18,15 +21,15 @@ public class Triangle {
 	 * @param b
 	 * @param c
 	 */
-	public Triangle(Point a, Point b, Point c) {
-		super();
+	public Triangle(Point a, Point b, Point c, Material material) {
+		super(material);
 		this.a = a;
 		this.b = b;
 		this.c = c;
 	}
 
-	public Triangle(Collection<Point> points) {
-		super();
+	public Triangle(Collection<Point> points, Material material) {
+		super(material);
 		Point[] vpoints = (Point[]) points.toArray();
 		a = vpoints[0];
 		b = vpoints[1];
@@ -56,6 +59,48 @@ public class Triangle {
 		Vect3 n1 = ab.cross(ac);
 		Vect3 n2 = ab.cross(ap);
 		return n1.colinear(n2);
+	}
+		
+	public Intersection getIntersection(Ray ray) {
+
+	    // find vectors for two edges sharing A                                   
+	    Vect3 edge1 = b.toVect3().minus(a.toVect3());
+	    Vect3 edge2 = c.toVect3().minus(a.toVect3());
+
+	    // begin calculating determiant - also used to calculate U parameter      
+	    Vect3 pvec = ray.getDirection().cross(edge2);
+
+	    // if determinant is near zero, ray lies in plane of triangle             
+	    double det = edge1.scalar(pvec);
+
+	    if (det < 0) {
+	        return null;
+	    }
+
+	    // calculate distance from A to ray origin                                
+	    Vect3 tvec = ray.getOrigin().toVect3().minus(a.toVect3());
+
+	    // calculate U parameter and test bounds                                  
+	    double u = tvec.scalar(pvec);
+	    if (u < 0 || u > det) {
+	    	return null;
+	    }
+
+	    // prepare to test V parameter                                            
+	    Vect3 qvec = tvec.cross(edge1);
+
+	    // calculate V parameter and test bounds                                  
+	    double v = ray.getDirection().scalar(qvec);
+	    if (v < 0.0 || u + v > det) {
+	        return null;
+	    }
+
+	    Vect3 normal = edge1.cross(edge2);
+	    if(normal.scalar(ray.getDirection()) > 0) {
+	    	normal = normal.times(-1);
+	    }
+	    
+	    return new Intersection(this, normal, edge2.scalar(qvec) / det);
 	}
 	
 	public Point getA() {

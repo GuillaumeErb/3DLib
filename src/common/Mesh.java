@@ -3,28 +3,64 @@ package common;
 import io.OBJObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Mesh {
 
-	private Collection<Triangle> triangles;
+	private Set<Triangle> triangles;
 
+	private HashMap<Point, Set<Triangle>> vertexToSurroundingTriangles;
+	
+	private HashMap<Point, Vect3> vertexToNormals;
+	
 	/**
 	 * @param triangles
 	 */
-	public Mesh(Collection<Triangle> triangles) {
+	public Mesh(Set<Triangle> triangles,
+				HashMap<Point, Set<Triangle>> vertexToSurroundingTriangles,
+				HashMap<Point, Vect3> vertexToNormals) {
 		super();
 		this.triangles = triangles;
+		this.vertexToSurroundingTriangles = vertexToSurroundingTriangles;
+		this.vertexToNormals = vertexToNormals;
 	}
 	
 	public Mesh() {
 		super();
-		this.triangles = new ArrayList<Triangle>();
+		this.triangles = new HashSet<Triangle>();
+		this.vertexToSurroundingTriangles = new HashMap<Point, Set<Triangle>>();
+		this.vertexToNormals = new HashMap<Point, Vect3>();
+	}
+	
+	public Set<Triangle> getSurroundingTriangles(Point p) {
+		return vertexToSurroundingTriangles.get(p);
+	}
+	
+	public Set<Point> getPoints() {
+		return vertexToSurroundingTriangles.keySet();
+	}
+	
+	public Set<Triangle> getTriangles() {
+		return this.triangles;
 	}
 	
 	public void addTriangle(Triangle t) {
 		triangles.add(t);
+		for(Point vertex : t.getPoints()) {
+			this.addVertex(vertex, t);
+		}
+	}
+	
+	private void addVertex(Point p, Triangle t) {
+		if(this.vertexToSurroundingTriangles.containsKey(p)) {
+			this.vertexToSurroundingTriangles.get(p).add(t);
+		} else {
+			Set<Triangle> triangleList = new HashSet<Triangle>();
+			triangleList.add(t);
+			this.vertexToSurroundingTriangles.put(p, triangleList);
+		}
 	}
 	
 	public OBJObject getOBJObject(String name, int iInit) {
@@ -64,8 +100,9 @@ public class Mesh {
 		return obj;
 	}
 	
-	public Collection<Triangle> getTriangles() {
-		return this.triangles;
+
+	public void addNormal(Point p, Vect3 n) {
+		this.vertexToNormals.put(p, n);
 	}
 	
 }
