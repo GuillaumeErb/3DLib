@@ -1,6 +1,7 @@
 package lighting;
 
 import common.Point;
+import common.Vect3;
 
 import raytracer.Color;
 import raytracer.Intersection;
@@ -39,6 +40,11 @@ public class PointLight extends Light {
 
 	public void setPoint(Point point) {
 		this.point = point;
+	}
+
+	@Override
+	public Vect3 fromPointToLight(Point point) {
+		return this.point.toVect3().minus(point.toVect3()).normalize();
 	}
 
 }

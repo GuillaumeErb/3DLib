@@ -1,20 +1,31 @@
 package lighting;
 
-import common.Point;
-
 import raytracer.Color;
-import raytracer.Scene;
 
-public class AmbientLight extends Light{
+public class AmbientLight {
 
+	private Color color;
+	private double intensity;
+	
 	public AmbientLight(Color color, double intensity) {
-		super(color, intensity);
+		this.color = color;
+		this.intensity = intensity;
 	}
 
-	@Override
-	public boolean lightsPoint(Point point, Scene scene) {
-		return true;
+	public Color getColor() {
+		return color;
 	}
 
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
+	public double getIntensity() {
+		return intensity;
+	}
+
+	public void setIntensity(double intensity) {
+		this.intensity = intensity;
+	}
+	
 }

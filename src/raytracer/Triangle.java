@@ -37,7 +37,7 @@ public class Triangle extends Primitive {
 	}
 
 	public Collection<Point> getPoints() {
-		ArrayList<Point> list = new ArrayList<>();
+		ArrayList<Point> list = new ArrayList<Point>();
 		list.add(a);
 		list.add(b);
 		list.add(c);

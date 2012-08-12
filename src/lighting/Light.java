@@ -1,6 +1,7 @@
 package lighting;
 
 import common.Point;
+import common.Vect3;
 
 import raytracer.Color;
 import raytracer.Scene;
@@ -19,6 +20,8 @@ public abstract class Light {
 	}
 
 	public abstract boolean lightsPoint(Point point, Scene scene);
+	
+	public abstract Vect3 fromPointToLight(Point point);
 	
 	public Color getColor() {
 		return color;

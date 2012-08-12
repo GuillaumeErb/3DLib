@@ -2,6 +2,7 @@ package raytracer;
 
 import java.util.Set;
 
+import lighting.AmbientLight;
 import lighting.Light;
 
 
@@ -11,16 +12,18 @@ public class Scene {
 	
 	public Set<Light> lights;
 	
+	public AmbientLight ambientLight;
+	
 	public Camera camera;
 
 	public Scene(Set<SimpleObject> objects, Set<Light> lights, Camera camera) {
 		super();
 		this.objects = objects;
 		this.lights = lights;
+		this.ambientLight = new AmbientLight(new Color(1,1,1), 1);
 		this.camera = camera;
 	}
 
-	
 	public Color renderPixel(int x, int y) {
         Ray ray = new Ray(this.camera.getPosition(), 
         				  this.camera.getDirection(x, y));
@@ -86,6 +89,17 @@ public class Scene {
 		this.lights = lights;
 	}
 
+
+	public AmbientLight getAmbientLight() {
+		return ambientLight;
+	}
+
+
+	public void setAmbientLight(AmbientLight ambientLight) {
+		this.ambientLight = ambientLight;
+	}
+
+	
 	public Camera getCamera() {
 		return camera;
 	}

@@ -42,4 +42,9 @@ public class DirectionalLight extends Light {
 		this.direction = direction;
 	}
 
+	@Override
+	public Vect3 fromPointToLight(Point point) {
+		return this.direction.times(-1);
+	}
+
 }

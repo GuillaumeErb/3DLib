@@ -6,5 +6,7 @@ import raytracer.Ray;
 import raytracer.Scene;
 
 public interface Material {
+	
 	public Color renderRay(Ray ray, Intersection intersection, Scene scene);
+
 }
