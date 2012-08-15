@@ -96,9 +96,9 @@ public class Triangle extends Primitive {
 	    }
 
 	    Vect3 normal = edge1.cross(edge2);
-	    if(normal.scalar(ray.getDirection()) > 0) {
-	    	normal = normal.times(-1);
-	    }
+//	    if(normal.scalar(ray.getDirection()) > 0) {
+//	    	normal = normal.times(-1);
+//	    }
 	    
 	    return new Intersection(this, normal, edge2.scalar(qvec) / det);
 	}

@@ -28,7 +28,10 @@ public class DirectionalLight extends Light {
 									this.direction.times(-1)));
 			
 			if(i != null) {
+				if(Math.abs(i.getDistance())<0.001 ||
+						i.getDistance() > 0) {
 				return false;
+			}
 			}
 		}
 		return true;

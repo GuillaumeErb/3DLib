@@ -32,20 +32,23 @@ public class Scene {
 	
 	
 	private Color renderRay(Ray ray) {
-		
+		return this.renderRay(ray, 1);
+	}
+	
+	public Color renderRay(Ray ray, int recursionsLeft) {
 		Color color = null;
 		Intersection intersection = this.computeIntersection(ray);
 		
-		if (intersection == null) {                          
+		if (intersection == null || recursionsLeft == 0) {                          
 			color = new Color(0,0,0);
 		} else {
-			color = intersection.getObject().getMaterial().renderRay(ray, intersection, this);
+			color = intersection.getObject().getMaterial().renderRay(ray, intersection, this, recursionsLeft-1);
 		}
 		
 		return color;
 	}
 
-	private Intersection computeIntersection(Ray ray) {
+	public Intersection computeIntersection(Ray ray) {
 		
 		Intersection intersection = null;
 		Intersection tempIntersection;
@@ -54,17 +57,12 @@ public class Scene {
 		for(SimpleObject object : this.objects)	{
 			tempIntersection = object.getIntersection(ray);
 
-			if(tempIntersection != null) {
-			if(tempIntersection.getDistance() <0 && tempIntersection.getDistance() > -0.001) {
-				tempIntersection.setDistance(-tempIntersection.getDistance());
-			}
-			}
-			
-			if(tempIntersection != null && tempIntersection.getDistance() >= 0 && 
+			if(tempIntersection != null && 
+			   tempIntersection.getDistance() > 0 && 
 			   tempIntersection.getDistance() < distance) {
-				
 				intersection = tempIntersection;
-	        }
+				distance = tempIntersection.getDistance();
+			}
 			
 	    }
 		

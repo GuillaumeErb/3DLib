@@ -18,7 +18,7 @@ public class FlatMaterial implements Material {
 		this.color = color;
 	}
 
-	public Color renderRay(Ray ray, Intersection intersection, Scene scene) {
+	public Color renderRay(Ray ray, Intersection intersection, Scene scene, int recursionsLeft) {
 		Point pinter = new Point(ray.getOrigin().toVect3().plus(ray.getDirection().times(intersection.getDistance())));
 		for(Light light : scene.lights) {
 			if(light.lightsPoint(pinter, scene)) {

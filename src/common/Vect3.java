@@ -79,6 +79,10 @@ public class Vect3 {
 		return c == 1 || c == -1;
 	}
 	
+	public Vect3 symmetry(Vect3 v) {
+		return this.times(-1).plus(v.times(2*this.scalar(v)));
+	}
+	
 	public double getX() {
 		return x;
 	}

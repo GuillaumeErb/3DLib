@@ -16,23 +16,32 @@ public class Color {
 	}
 	
 	public Color plus(Color color) {
-		double r = Math.min(this.r + color.getR(), 1);
-		double g = Math.min(this.g + color.getG(), 1);
-		double b = Math.min(this.b + color.getB(), 1);
+//		double r = Math.min(this.r + color.getR(), 1);
+//		double g = Math.min(this.g + color.getG(), 1);
+//		double b = Math.min(this.b + color.getB(), 1);
+		double r = this.r + color.getR();
+		double g = this.g + color.getG();
+		double b = this.b + color.getB();
 		return new Color(r, g, b);
 	}
 	
 	public Color times(Color color) {
-		double r = Math.min(this.r * color.getR(), 1);
-		double g = Math.min(this.g * color.getG(), 1);
-		double b = Math.min(this.b * color.getB(), 1);
+//		double r = Math.min(this.r * color.getR(), 1);
+//		double g = Math.min(this.g * color.getG(), 1);
+//		double b = Math.min(this.b * color.getB(), 1);
+		double r = this.r * color.getR();
+		double g = this.g * color.getG();
+		double b = this.b * color.getB();
 		return new Color(r, g, b);
 	}
 	
 	public Color times(double coef) {
-		double r = Math.min(this.r * coef, 1);
-		double g = Math.min(this.g * coef, 1);
-		double b = Math.min(this.b * coef, 1);
+//		double r = Math.min(this.r * coef, 1);
+//		double g = Math.min(this.g * coef, 1);
+//		double b = Math.min(this.b * coef, 1);
+		double r = this.r * coef;
+		double g = this.g * coef;
+		double b = this.b * coef;
 		return new Color(r, g, b);
 	}
 	
@@ -41,7 +50,8 @@ public class Color {
 	}
 
 	public int getR255() {
-		return (int)Math.floor(r*255);
+		return (int)Math.floor((1-Math.exp(-r))*255);
+//		return (int)Math.floor(b*255);
 	}
 	
 	public void setR(double r) {
@@ -53,7 +63,8 @@ public class Color {
 	}
 
 	public int getG255() {
-		return (int)Math.floor(g*255);
+		return (int)Math.floor((1-Math.exp(-g))*255);
+//		return (int)Math.floor(g*255);
 	}
 	
 	public void setG(double g) {
@@ -65,7 +76,8 @@ public class Color {
 	}
 
 	public int getB255() {
-		return (int)Math.floor(b*255);
+		return (int)Math.floor((1-Math.exp(-b))*255);
+//		return (int)Math.floor(b*255);
 	}
 	
 	public void setB(double b) {

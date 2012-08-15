@@ -40,7 +40,7 @@ public class OBJReader {
 			String strLine;
 			int nLine = 1;
 			while ((strLine = br.readLine()) != null)   {
-				System.out.println(strLine);
+//				System.out.println(strLine);
 				String[] line = strLine.trim().toLowerCase().split(" +");
 				if(line.length>0) {
 					switch(line[0].trim()) {
