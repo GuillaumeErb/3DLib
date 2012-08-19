@@ -1,14 +1,15 @@
 package io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import objects.Mesh;
+import objects.Triangle;
+
 import org.junit.Test;
 
-import common.Mesh;
 import common.Point;
-import common.Triangle;
 
 public class OBJReaderTest {
 

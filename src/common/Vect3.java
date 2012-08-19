@@ -111,4 +111,12 @@ public class Vect3 {
 	public void setZ(double z) {
 		this.z = z;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Vect3 [x=" + x + ", y=" + y + ", z=" + z + "]";
+	}
+	
+	
 }

@@ -1,5 +1,6 @@
 package lighting;
 
+import objects.Object3D;
 import common.Point;
 import common.Vect3;
 
@@ -7,7 +8,6 @@ import raytracer.Color;
 import raytracer.Intersection;
 import raytracer.Ray;
 import raytracer.Scene;
-import raytracer.SimpleObject;
 
 public class PointLight extends Light {
 
@@ -20,7 +20,7 @@ public class PointLight extends Light {
 
 	@Override
 	public boolean lightsPoint(Point point, Scene scene) {
-		for(SimpleObject object : scene.getObjects()) {
+		for(Object3D object : scene.getObjects()) {
 			Intersection i = 
 					object.getIntersection(
 							new Ray(point, 

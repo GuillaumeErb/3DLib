@@ -3,10 +3,6 @@ package common;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import materials.Material;
-
-import raytracer.Intersection;
-
 public class Triangle {
 
 	private Point a;

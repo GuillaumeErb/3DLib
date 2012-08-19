@@ -6,12 +6,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import common.Mesh;
+import objects.Mesh;
+import objects.Triangle;
+
 import common.Point;
-import common.Triangle;
 import common.Vect3;
 
 public class OBJReader {

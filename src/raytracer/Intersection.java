@@ -1,26 +1,38 @@
 package raytracer;
 
+import objects.Object3D;
+import objects.Primitive;
 import common.Vect3;
 
 public class Intersection {
 
-	private SimpleObject object;
+	private Object3D object;
+	private Primitive primitive;
 	private Vect3 normal;
 	private double distance;
 	
-	public Intersection(SimpleObject object, Vect3 normal, double distance) {
+	public Intersection(Primitive primitive, Vect3 normal, double distance) {
 		super();
-		this.object = object;
+		this.setObject(null);
+		this.primitive = primitive;
 		this.normal = normal;
 		this.distance = distance;
 	}
 	
-	public SimpleObject getObject() {
-		return this.object;
+//	public Intersection(Object3D object, Primitive primitive, Vect3 normal, double distance) {
+//		super();
+//		this.setObject(object);
+//		this.primitive = primitive;
+//		this.normal = normal;
+//		this.distance = distance;
+//	}
+	
+	public Primitive getPrimitive() {
+		return this.primitive;
 	}
 	
-	public void setObject(SimpleObject object) {
-		this.object = object;
+	public void setPrimitive(Primitive primitive) {
+		this.primitive = primitive;
 	}
 	
 	public Vect3 getNormal() {
@@ -37,6 +49,14 @@ public class Intersection {
 	
 	public void setDistance(double distance) {
 		this.distance = distance;
+	}
+
+	public Object3D getObject() {
+		return object;
+	}
+
+	public void setObject(Object3D object) {
+		this.object = object;
 	}
 
 }

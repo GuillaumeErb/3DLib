@@ -2,13 +2,15 @@ package raytracer;
 
 import java.util.Set;
 
+import objects.Object3D;
+
 import lighting.AmbientLight;
 import lighting.Light;
 
 
 public class Scene {
 	
-	public Set<SimpleObject> objects;
+	public Set<Object3D> objects;
 	
 	public Set<Light> lights;
 	
@@ -16,7 +18,7 @@ public class Scene {
 	
 	public Camera camera;
 
-	public Scene(Set<SimpleObject> objects, Set<Light> lights, Camera camera) {
+	public Scene(Set<Object3D> objects, Set<Light> lights, Camera camera) {
 		super();
 		this.objects = objects;
 		this.lights = lights;
@@ -42,7 +44,7 @@ public class Scene {
 		if (intersection == null || recursionsLeft == 0) {                          
 			color = new Color(0,0,0);
 		} else {
-			color = intersection.getObject().getMaterial().renderRay(ray, intersection, this, recursionsLeft-1);
+			color = intersection.getPrimitive().getMaterial().renderRay(ray, intersection, this, recursionsLeft-1);
 		}
 		
 		return color;
@@ -54,16 +56,15 @@ public class Scene {
 		Intersection tempIntersection;
 		double distance = Double.MAX_VALUE;
 		
-		for(SimpleObject object : this.objects)	{
+		for(Object3D object : this.objects)	{
 			tempIntersection = object.getIntersection(ray);
 
 			if(tempIntersection != null && 
-			   tempIntersection.getDistance() > 0 && 
+			   tempIntersection.getDistance() > 0.01 && 
 			   tempIntersection.getDistance() < distance) {
 				intersection = tempIntersection;
 				distance = tempIntersection.getDistance();
 			}
-			
 	    }
 		
 		return intersection;
@@ -71,11 +72,11 @@ public class Scene {
 	}
 	
 
-	public Set<SimpleObject> getObjects() {
+	public Set<Object3D> getObjects() {
 		return objects;
 	}
 
-	public void setObjects(Set<SimpleObject> objects) {
+	public void setObjects(Set<Object3D> objects) {
 		this.objects = objects;
 	}
 

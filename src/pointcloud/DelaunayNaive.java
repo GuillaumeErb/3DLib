@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import common.Mesh;
+import objects.Mesh;
+
+
 import common.Point;
 import common.Simplex;
 import common.Triangle;
