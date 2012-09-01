@@ -116,6 +116,11 @@ public class Triangle extends Primitive {
 	    	normal = normal.times(-1);
 	    }
 	    
+//	    if(edge2.scalar(qvec) / det != edge2.scalar(qvec) / det) {
+//	    	System.out.println("toto");
+//	    	System.out.println(ray.getOrigin());
+//	    }
+	    
 	    return new Intersection(this, normal, edge2.scalar(qvec) / det);
 	}
 	

@@ -39,6 +39,7 @@ public class Scene {
 	
 	public Color renderRay(Ray ray, int recursionsLeft) {
 		Color color = null;
+		
 		Intersection intersection = this.computeIntersection(ray);
 		
 		if (intersection == null || recursionsLeft == 0) {                          
@@ -51,12 +52,13 @@ public class Scene {
 	}
 
 	public Intersection computeIntersection(Ray ray) {
-		
+
 		Intersection intersection = null;
 		Intersection tempIntersection;
 		double distance = Double.MAX_VALUE;
 		
 		for(Object3D object : this.objects)	{
+
 			tempIntersection = object.getIntersection(ray);
 
 			if(tempIntersection != null && 

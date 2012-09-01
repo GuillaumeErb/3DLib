@@ -9,6 +9,9 @@ import java.util.Set;
 
 import objects.Mesh;
 import objects.Object3D;
+import objects.ObjectCSG;
+import objects.OperationCSG;
+import objects.Sphere;
 import objects.Triangle;
 
 import lighting.DirectionalLight;
@@ -31,11 +34,11 @@ public class Test {
 		// TODO Auto-generated method stub
 		Set<Object3D> objects = new HashSet<Object3D>();
 		Set<Light> lights = new HashSet<Light>();
-		Camera camera = new Camera(new Point(-100, -5, 3.6), 
+		Camera camera = new Camera(new Point(-100, 0, 0), 
 								   new Vect3(1, 0, 0), 
 								   new Vect3(0, 0, 1), 
-//								   2, 0.1, 0.1, 3, 3);
-		2, 0.02, 0.02, 2, 2);
+//								   2, 0.1, 0.1, 2, 2);
+		2, 0.4, 0.4, 500, 500);
 		
 //		objects.add(new Sphere(new Point(0,-2,0), 4, 
 //				               new HallMaterial(new Color(0.8, 0.4, 0.2),
@@ -80,20 +83,40 @@ public class Test {
 //	            		   			0,
 //	            		   			0,
 //	            		   			1)));
-//		objects.add(new Sphere(new Point(8,-5,0), 5, 
-//	               new HallMaterial(new Color(0.1, 0.8, 0.2),
-//	            		   			0.2,
-//	            		   			0.6,
-//	            		   			0.4, 
-//	            		   			2, 
-//	            		   			0.8, 
-//	            		   			100,
-//	            		   			new Color(0, 0, 0),
-//	            		   			0,
-//	            		   			0,
-//	            		   			0,
-//	            		   			0,
-//	            		   			1)));
+//
+//		
+//		Sphere s1 = new Sphere(new Point(8,0,0), 7, 
+//							   new HallMaterial(new Color(0.1, 0.8, 0.2),
+//									   			0.2,
+//									   			0.6,
+//									   			0.4, 
+//									   			2, 
+//									   			0.8, 
+//									   			100,
+//									   			new Color(0, 0, 0),
+//									   			1,
+//									   			1,
+//									   			0,
+//									   			0,
+//									   			1));
+//		
+//		Sphere s2 = new Sphere(new Point(7,4,0), 8, 
+//				   new HallMaterial(new Color(0.9, 0.4, 0.2),
+//						   			0.2,
+//						   			0.6,
+//						   			0.4, 
+//						   			2, 
+//						   			0.8, 
+//						   			100,
+//						   			new Color(0, 0, 0),
+//						   			1,
+//						   			1,
+//						   			0,
+//						   			0,
+//						   			1));
+//		
+//		objects.add(new ObjectCSG(OperationCSG.UNION, new ObjectCSG(s1), new ObjectCSG(s2)));
+//		objects.add(s2);
 //		
 //		objects.add(new Triangle(new Point(-10, 0, 10),
 //				new Point (10, 10, 0), new Point( 10, -10, -10),
@@ -136,13 +159,13 @@ public class Test {
 			t.setMaterial(new HallMaterial(new Color(1, 0.8, 0.2),
 							0,
 							0,
-							0.1, 
+							0.05, 
 							1, 
 							1, 
-							2000, 
+							200, 
 							new Color(0, 0, 0),
-							0,
-							0,
+							1,
+							1,
 							0,
 							0,
 							1));
@@ -167,8 +190,8 @@ public class Test {
 //			l++;
 //		}
 		
-//		lights.add(new DirectionalLight(new Color(1,1,1), 1,
-//										(new Vect3(0,-1,0)).normalize()));
+		lights.add(new DirectionalLight(new Color(1,1,1), 0.5,
+										(new Vect3(0,-1,0)).normalize()));
 
 		lights.add(new DirectionalLight(new Color(1,1,1), 1,
 									  	(new Vect3(5,-1,3)).normalize()));

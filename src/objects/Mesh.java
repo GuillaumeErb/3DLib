@@ -114,6 +114,7 @@ public class Mesh implements Object3D {
 
 	
 	public List<Intersection> getIntersections(Ray ray) {
+		
 		Intersection intersection;
 		List<Intersection> intersections = new ArrayList<Intersection>();
 		for(Triangle object : this.triangles) {
@@ -127,23 +128,30 @@ public class Mesh implements Object3D {
 	
 	@Override
 	public Intersection getIntersection(Ray ray) {
-		
+
 		Intersection intersection = null;
 		Intersection tempIntersection;
 		double distance = Double.MAX_VALUE;
-		
-		System.out.println(this.getIntersections(ray));
+
+		List<Intersection> intersections = this.getIntersections(ray);
 		ArrayList<Double> distances = new ArrayList<Double>();
-		for(Intersection i : this.getIntersections(ray)) {
+		for(Intersection i : intersections) {
 			distances.add(i.getDistance());
 		}
-		System.out.println(distances);
+		
+		
+		for(Intersection i : intersections) {
+			if(i.getDistance()>0) {
+				 intersection = i;
+//				 intersection.setDistance(intersection.getDistance()*-1);
+			}
+		}
 		
 		
 		for(Triangle object : this.triangles)	{
 			tempIntersection = object.getIntersection(ray);
 			if(tempIntersection != null && 
-			   tempIntersection.getDistance() > 0.001 && 
+//			   tempIntersection.getDistance() > 0 && 
 			   tempIntersection.getDistance() < distance) {
 				intersection = tempIntersection;
 				distance = tempIntersection.getDistance();
@@ -158,7 +166,7 @@ public class Mesh implements Object3D {
 			
 //			Vect3 ab = triangle.getB().toVect3().minus(triangle.getA().toVect3());
 //			Vect3 ac = triangle.getC().toVect3().minus(triangle.getA().toVect3());
-			boolean softShading = false;
+			boolean softShading = true;
 			if(softShading) {
 				Triangle apb = new Triangle(triangle.getA(), point, triangle.getB());
 				Triangle apc = new Triangle(triangle.getA(), point, triangle.getC());
