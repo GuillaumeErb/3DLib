@@ -1,4 +1,10 @@
 Miscellaneous 3D work.
-   - Delaunay triangulation
+   - Point cloud & Delaunay triangulation (wip)
    - .obj file utility
-   - ...
+   - Raytracing:
+      - Sphere, Cylinder, Plane, Quadrics, CSG, Triangle Mesh
+      - Ambient, Directional and Point lights
+      - Hall Material (>Blinn)
+      - Perlin noise for materials/bump mapping
+      - Multithreading, distribution using RMI (wip)
+      - Swing GUI
