@@ -1,6 +1,8 @@
 package common;
 
-public class Vect3 {
+import java.io.Serializable;
+
+public class Vect3 implements Serializable {
 
 	private double x;
 	private double y;
@@ -70,6 +72,18 @@ public class Vect3 {
 		return new Vect3(x/d,
 			             y/d,
 			             z/d);
+	}
+	
+	/**
+	 * 
+	 * @param angle in radian
+	 * @param axis
+	 * @return
+	 */
+	public Vect3 rotate(double angle, Vect3 axis) {
+		return this.times(Math.cos(angle)).plus(
+				axis.cross(this.times(Math.sin(angle)))).plus(
+						axis.times(axis.scalar(this) * (1.-Math.cos(angle))));
 	}
 	
 	public boolean colinear(Vect3 v) {

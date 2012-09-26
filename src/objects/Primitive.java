@@ -5,7 +5,7 @@ import materials.Material;
 
 public abstract class Primitive implements Object3D {
 
-	private Material material;
+	protected Material material;
 
 	public Primitive(Material material) {
 		this.material = material;
@@ -18,5 +18,5 @@ public abstract class Primitive implements Object3D {
 	public void setMaterial(Material material) {
 		this.material = material;
 	}
-
+	
 }

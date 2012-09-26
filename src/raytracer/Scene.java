@@ -1,5 +1,6 @@
 package raytracer;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import objects.Object3D;
@@ -8,7 +9,7 @@ import lighting.AmbientLight;
 import lighting.Light;
 
 
-public class Scene {
+public class Scene implements Serializable {
 	
 	public Set<Object3D> objects;
 	
@@ -41,6 +42,9 @@ public class Scene {
 		Color color = null;
 		
 		Intersection intersection = this.computeIntersection(ray);
+		if(intersection != null && intersection.getNormal().scalar(ray.getDirection()) > -0.0001) {
+			intersection.setNormal(intersection.getNormal().times(-1));
+		}
 		
 		if (intersection == null || recursionsLeft == 0) {                          
 			color = new Color(0,0,0);

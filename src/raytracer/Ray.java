@@ -1,10 +1,12 @@
 package raytracer;
 
+import java.io.Serializable;
+
 import common.Point;
 import common.Vect3;
 
 
-public class Ray {
+public class Ray implements Serializable {
 	private Point origin;
 	private Vect3 direction;
 	

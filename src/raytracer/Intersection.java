@@ -1,10 +1,12 @@
 package raytracer;
 
+import java.io.Serializable;
+
 import objects.Object3D;
 import objects.Primitive;
 import common.Vect3;
 
-public class Intersection {
+public class Intersection implements Comparable<Intersection>, Serializable {
 
 	private Object3D object;
 	private Primitive primitive;
@@ -57,6 +59,17 @@ public class Intersection {
 
 	public void setObject(Object3D object) {
 		this.object = object;
+	}
+
+	@Override
+	public int compareTo(Intersection o) {
+		if(this.getDistance() == o.getDistance()) {
+			return 0;
+		} else if(this.getDistance() < o.getDistance()) {
+			return -1;
+		} else {
+			return 1;
+		}
 	}
 
 }

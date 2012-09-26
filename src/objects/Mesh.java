@@ -22,6 +22,8 @@ public class Mesh implements Object3D {
 	
 	private HashMap<Point, Vect3> vertexToNormals;
 	
+	private final boolean SOFT_SHADING = true;
+	
 	/**
 	 * @param triangles
 	 */
@@ -166,8 +168,7 @@ public class Mesh implements Object3D {
 			
 //			Vect3 ab = triangle.getB().toVect3().minus(triangle.getA().toVect3());
 //			Vect3 ac = triangle.getC().toVect3().minus(triangle.getA().toVect3());
-			boolean softShading = true;
-			if(softShading) {
+			if(SOFT_SHADING) {
 				Triangle apb = new Triangle(triangle.getA(), point, triangle.getB());
 				Triangle apc = new Triangle(triangle.getA(), point, triangle.getC());
 				Triangle bpc = new Triangle(triangle.getB(), point, triangle.getC());
@@ -175,7 +176,11 @@ public class Mesh implements Object3D {
 				Vect3 normal = this.vertexToNormals.get(triangle.getA()).times(bpc.area()).plus(
 							   this.vertexToNormals.get(triangle.getB()).times(apc.area())).plus(
 							   this.vertexToNormals.get(triangle.getC()).times(apb.area())).normalize();
-				intersection.setNormal(normal);
+				if(normal.scalar(ray.getDirection()) > 0) {
+					intersection.setNormal(normal.times(-1));					
+				} else {
+					intersection.setNormal(normal);
+				}
 			}
 //			} else {
 //				intersection.setNormal(intersection.getNormal().times(-1));

@@ -2,6 +2,7 @@ package objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import common.Point;
 import common.Vect3;
@@ -32,7 +33,7 @@ public class Triangle extends Primitive {
 	}
 
 	public Triangle(Point a, Point b, Point c) {
-		super(new FlatMaterial(new Color(0.5,0.5,0.5)));
+		super(new FlatMaterial(new Color(0.5, 0.5, 0.5)));
 		this.a = a;
 		this.b = b;
 		this.c = c;
@@ -175,6 +176,13 @@ public class Triangle extends Primitive {
 
 	public boolean hasAsVertex(Point pp) {
 		return pp.equals(a) || pp.equals(b) || pp.equals(c);
+	}
+
+	@Override
+	public List<Intersection> getIntersections(Ray ray) {
+		List<Intersection> intersections = new ArrayList<Intersection>();
+		intersections.add(this.getIntersection(ray));
+		return intersections;
 	}
 	
 	

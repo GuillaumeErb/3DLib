@@ -1,13 +1,19 @@
 package pointcloud;
 
+import io.ImageWriter;
 import io.OBJReader;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import objects.Mesh;
+import objects.Sphere;
+import raytracer.Camera;
 
 
+import common.Plane;
 import common.Point;
 import common.Simplex;
 import common.Vect3;
@@ -16,11 +22,11 @@ public class PointCloud {
 
 	private Collection<Point> pointCloud;
 	
-	public PointCloud(String fileName) {
-		OBJReader reader = new OBJReader(fileName);
-		reader.read();
-		this.pointCloud = reader.getPoints();
-	}
+//	public PointCloud(String fileName) {
+//		OBJReader reader = new OBJReader(fileName);
+//		reader.read();
+//		this.pointCloud = reader.getPoints();
+//	}
 	
 	/**
 	 * @param pointCloud
@@ -28,6 +34,14 @@ public class PointCloud {
 	public PointCloud(Collection<Point> pointCloud) {
 		super();
 		this.pointCloud = pointCloud;
+	}
+	
+	public Set<Sphere> toSpheres(double radius) {
+		HashSet<Sphere> spheres = new HashSet<Sphere>();
+		for(Point point : this.pointCloud) {
+			spheres.add(new Sphere(point, radius));
+		}
+		return spheres;
 	}
 	
 	public DelaunayNaive toSimplices() {

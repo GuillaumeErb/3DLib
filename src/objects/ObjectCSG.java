@@ -1,6 +1,8 @@
 package objects;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import raytracer.Intersection;
 import raytracer.Ray;
@@ -17,6 +19,14 @@ public class ObjectCSG implements Object3D {
 	public ObjectCSG(Primitive primitive) {
 		super();
 		this.primitive = primitive;
+		this.operation = null;
+		this.leftSubtree = null;
+		this.rightSubtree = null;
+	}
+	
+	protected ObjectCSG() {
+		super();
+		this.primitive = null;
 		this.operation = null;
 		this.leftSubtree = null;
 		this.rightSubtree = null;
@@ -64,10 +74,32 @@ public class ObjectCSG implements Object3D {
 		this.rightSubtree = rightSubtree;
 	}
 
-
-	public Intersection getIntersection(Ray ray) {
+	public boolean contains(Primitive primtive) {
 		if(this.primitive != null) {
-			return this.primitive.getIntersection(ray);
+			return this.primitive.equals(primtive);
+		} else {
+			return this.rightSubtree.contains(primtive) ||
+					this.rightSubtree.contains(primtive);
+		}
+	}
+	
+	public Intersection getIntersection(Ray ray) {
+		
+		List<Intersection> intersections = this.getIntersections(ray);
+		if(intersections == null) {
+			return null;
+		}
+		if(intersections.size()>0) {
+			return intersections.get(0);
+		} else {
+			return null;
+		}
+		
+	}
+
+	public List<Intersection> getIntersections(Ray ray) {
+		if(this.primitive != null) {
+			return this.primitive.getIntersections(ray);
 		} else if(this.operation == OperationCSG.UNION) {
 			return this.union(ray);
 		} else if(this.operation == OperationCSG.INTERSECTION) {
@@ -78,31 +110,41 @@ public class ObjectCSG implements Object3D {
 		return null;
 	}
 	
-	private Intersection union(Ray ray) {
-		return this.csgIntersection(ray, false, false);
+	private List<Intersection> union(Ray ray) {
+		return this.csgIntersections(ray, false, false);
 	}
 	
-	private Intersection intersection(Ray ray) {
-		return this.csgIntersection(ray, true, true);
+	private List<Intersection> intersection(Ray ray) {
+		return this.csgIntersections(ray, true, true);
 	}
 	
-	private Intersection difference(Ray ray) {
-		return this.csgIntersection(ray, true, false);
+	private List<Intersection> difference(Ray ray) {
+		return this.csgIntersections(ray, true, false);
 	}
 	
-	private Intersection csgIntersection(Ray ray, boolean enter1, boolean enter2) {
+	private List<Intersection> csgIntersections(Ray ray, boolean enter1, boolean enter2) {
 		ArrayList<Intersection> tempIntersection = new ArrayList<Intersection>();
 		int i;
 		
-		Intersection left = leftSubtree.getIntersection(ray);
-		if(left!=null) {
-			tempIntersection.add(left);
-		}
-		Intersection right = rightSubtree.getIntersection(ray);
-		if(right!=null) {
-			tempIntersection.add(right);
+		List<Intersection> left = leftSubtree.getIntersections(ray);
+		if(left != null) {
+			for(Intersection leftElement : left) {
+				if(leftElement != null) {
+					tempIntersection.add(leftElement);
+				}
+			}
 		}
 		
+		List<Intersection> right = rightSubtree.getIntersections(ray);
+		if(right != null) {
+			for(Intersection rightElement : right) {
+				if(rightElement != null) {
+					tempIntersection.add(rightElement);
+				}
+			}
+		}
+		
+		Collections.sort(tempIntersection);
 		
 		if(tempIntersection.size() == 0) {
 			return null;
@@ -111,7 +153,7 @@ public class ObjectCSG implements Object3D {
 		i = 0;
 		
 		while(i<tempIntersection.size() && tempIntersection.get(i).getDistance()<0) {
-			if(tempIntersection.get(i).getPrimitive().equals(leftSubtree)) {
+			if(leftSubtree.contains(tempIntersection.get(i).getPrimitive())) {
 				enter1 = ! enter1;
 			} else {
 				enter2 = ! enter2;
@@ -121,22 +163,23 @@ public class ObjectCSG implements Object3D {
 		
 		i=0;
 		
-		while(i<tempIntersection.size()) {
+		List<Intersection> intersections = new ArrayList<Intersection>();
+		
+		for(Intersection tempInter : tempIntersection) {
 			if(enter1 == false && enter2 == false) {
-				return tempIntersection.get(i);
+				intersections.add(tempInter);
 			}
-			if(tempIntersection.get(i).getPrimitive().equals(rightSubtree)) {
+			if(rightSubtree.contains(tempInter.getPrimitive())) {
 				enter1 = ! enter1;
 			} else {
 				enter2 = ! enter2;
 			}
 			if(enter1 == false && enter2 == false) {
-				return tempIntersection.get(i);
+				intersections.add(tempInter);
 			}
-			i++;
 		}
 		
-		return null;
+		return intersections;
 	}
 
 }

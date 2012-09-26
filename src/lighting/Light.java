@@ -1,5 +1,7 @@
 package lighting;
 
+import java.io.Serializable;
+
 import common.Point;
 import common.Vect3;
 
@@ -7,7 +9,12 @@ import raytracer.Color;
 import raytracer.Scene;
 
 
-public abstract class Light {
+public abstract class Light implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1462195689838806480L;
 
 	private Color color;
 	

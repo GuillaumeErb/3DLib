@@ -3,7 +3,7 @@ package common;
 import java.util.ArrayList;
 
 import objects.Mesh;
-
+import objects.Triangle;
 
 
 public class Sphere {

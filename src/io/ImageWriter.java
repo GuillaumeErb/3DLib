@@ -25,6 +25,22 @@ public class ImageWriter {
 		this.image.setRGB(x, y, rgb);
 	}
 
+	public void initialize(Color color) {
+		for(int i=0; i<this.image.getWidth(); i++) {
+			for(int j=0; j<this.image.getHeight(); j++) {
+				this.setRGB(i, j, color);
+			}
+		}
+	}
+	
+	public void initialize() {
+		this.initialize(new Color(0, 0, 0));
+	}
+	
+	public void setPoint(int x, int y, int radius) {
+		this.setRGB(x, y, new Color(0, 0, 0));
+	}
+	
 	public void write(String output) throws IOException {
 		File outputFile = new File(output);
 		ImageIO.write(this.image, "png", outputFile);
