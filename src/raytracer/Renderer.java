@@ -20,9 +20,11 @@ public class Renderer {
 	private final static double SUPERSAMPLING_THRESHOLD_END = 0.01;
 	private final static int SUPERSAMPLING_MAX_RAYS = 1;
 	private final static double SUPERSAMPLING_SHOW_LIMIT = 16;
-	private final static boolean SUPERSAMPLING_SHOW = false;
+	private final static boolean SUPERSAMPLING_SHOW = true;
 	private final static int THREADS = 4;
 	private final static boolean MULTITHREADING = true;
+	private final static boolean refining = true;
+	private final static int refiningLevel = 4;
 	
 	private Scene scene;
 	private Camera camera;
@@ -98,7 +100,7 @@ public class Renderer {
 				
 			}
 			
-			screen.display(render(camera, scene));
+			screen.display(render());
 		}
 
 		
@@ -110,16 +112,16 @@ public class Renderer {
 
 	}
 		
-	public BufferedImage render(Camera camera, Scene scene) {
+	public BufferedImage render() {
 
 		long start = (new Date()).getTime();
 		
 		BufferedImage ib = null;
 		
 		if(MULTITHREADING) {
-			ib = renderMultithreading(camera, scene);
+			ib = renderMultithreading();
 		} else {
-			ib = renderBasic(camera, scene);
+			ib = renderBasic();
 		}
 		
 		long time = (new Date()).getTime() - start;
@@ -130,12 +132,12 @@ public class Renderer {
 	}
 	
 	
-	public BufferedImage renderBasic(Camera camera, Scene scene) {
+	public BufferedImage renderBasic() {
 		BufferedImage buffer = new BufferedImage(camera.getXResolution(), camera.getYResolution(), BufferedImage.TYPE_3BYTE_BGR); //5
 		
 		for(int i=0; i<scene.getCamera().getXResolution(); i++) {
 			for(int j=0; j<scene.getCamera().getYResolution(); j++) {
-				Color color = renderPixel(i, j, camera, scene);
+				Color color = renderPixel(i, j);
 				buffer.setRGB(i, j, color.getRGB());
 			}
 		}
@@ -152,7 +154,7 @@ public class Renderer {
 		}
 	}
 	
-	private BufferedImage renderMultithreading(Camera camera, Scene scene) {
+	private BufferedImage renderMultithreading() {
 		BufferedImage buffer = new BufferedImage(camera.getXResolution(), camera.getYResolution(), BufferedImage.TYPE_3BYTE_BGR);
 
 		ArrayList<RenderThread> threads = new ArrayList<RenderThread>();
@@ -160,14 +162,12 @@ public class Renderer {
 		int t=0;
 		for(t=0; t<THREADS-1; t++) {
 			thread = new RenderThread(t*scene.getCamera().getYResolution()/THREADS, 
-									  (t+1)*scene.getCamera().getYResolution()/THREADS,
-									  camera, scene);
+									  (t+1)*scene.getCamera().getYResolution()/THREADS);
 			thread.start();
 			threads.add(thread);
 		}
 		thread = new RenderThread(t*scene.getCamera().getYResolution()/THREADS, 
-				  				  scene.getCamera().getYResolution(),
-				  camera, scene);
+				  				  scene.getCamera().getYResolution());
 		thread.start();
 		threads.add(thread);
 		
@@ -189,30 +189,32 @@ public class Renderer {
 		
 	}
 	
-	private List<Color> renderLine(int l, Camera camera, Scene scene) {
+	public List<Color> renderLine(int l) {
 		List<Color> colors = new ArrayList<Color>();
 		for(int i=0; i<scene.getCamera().getXResolution(); i++) {
-			colors.add(renderPixel(i, l, camera, scene));
+			colors.add(renderPixel(i, l));
 		}
 		return colors;
 	}
 	
-	private Color renderPixel(int x, int y, Camera camera, Scene scene) {
+	private Color renderPixel(int x, int y) {
 		if(ANTIALIASING) {
-			return renderPixel(x, y, 1, camera, scene);
+			return renderPixel(x, y, 1);
 		} else {
 			return scene.renderPixel(x, y);
 		}
 	}
 	
 	
-	private Color renderPixel(double x, double y, int subdivision, Camera camera, Scene scene) {
+	private Color renderPixel(double x, double y, int subdivision) {
 
+//		System.out.println(subdivision);
+		
         ArrayList<Color> colors = new ArrayList<Color>();
         Color meanColor = new Color(0, 0, 0);
         Color oldMeanColor;
 
-        ArrayList<Vect3> directions = camera.getFourDirections(x, y, 1);
+        ArrayList<Vect3> directions = camera.getFourDirections(x, y, subdivision);
         for (Vect3 direction : directions) {
             Ray ray = new Ray(camera.getPosition(), direction);
             Color res = scene.renderRay(ray, 10); //TODO Create a global recursion limit for reflections/refractions
@@ -232,11 +234,12 @@ public class Renderer {
         	oldMeanColor = meanColor;
 			if((subdivision < SUPERSAMPLING_MAX_RAYS)
                     && (Math.abs(oldMeanColor.minus(meanColor).sum()) > SUPERSAMPLING_THRESHOLD_END)) {
+				
             	double c = 1./(subdivision+1);
-            	meanColor = renderPixel(x+c, y+c, subdivision+1, camera, scene);
-            	meanColor = meanColor.plus(renderPixel(x+c, y+c, subdivision+1, camera, scene));
-            	meanColor = meanColor.plus(renderPixel(x+c, y+c, subdivision+1, camera, scene));
-            	meanColor = meanColor.plus(renderPixel(x+c, y+c, subdivision+1, camera, scene));
+            	meanColor = renderPixel(x+c, y+c, subdivision+1);
+            	meanColor = meanColor.plus(renderPixel(x+c, y+c, subdivision+1));
+            	meanColor = meanColor.plus(renderPixel(x+c, y+c, subdivision+1));
+            	meanColor = meanColor.plus(renderPixel(x+c, y+c, subdivision+1));
             }
 			meanColor = meanColor.dividedBy(4);
 			return meanColor;
@@ -251,21 +254,17 @@ public class Renderer {
 		
 		public int begin;
 		public int end;
-		private Camera camera;
-		private Scene scene;
 		public List<List<Color>> lines;
 		
-		public RenderThread(int begin, int end, Camera camera, Scene scene) {
+		public RenderThread(int begin, int end) {
 			this.begin = begin;
 			this.end = end;
-			this.camera = camera;
-			this.scene = scene;
 			this.lines = new ArrayList<List<Color>>();
 		}
 
 		public void run() {
 			for(int l=this.begin; l<end; l++) {
-				this.lines.add(renderLine(l, camera, scene));
+				this.lines.add(renderLine(l));
 			}
 		}
 		

@@ -139,4 +139,16 @@ public class Quadric extends Primitive {
 						  f*point.getX() + e*point.getY() + c*point.getZ() + j)).normalize();
 	}
 	
+	
+	public void rotate(Point point, Vect3 axis, double angle) {
+		
+	}
+	
+	public void translate(Vect3 vector) {
+		
+	}
+	
+	public void scale(double ratio) {
+		
+	}
 }

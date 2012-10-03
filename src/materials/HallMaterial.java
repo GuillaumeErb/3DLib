@@ -97,7 +97,7 @@ public class HallMaterial implements Material {
 			result = result.plus(this.getRefractedDiffuseContribution(light, ray, intersection, scene));
 //			result = result.plus(this.getRefractedSpecularContribution(light, ray, intersection, scene));
 		}
-//		for(SimpleObject object : scene.getObjects()) {
+//		for(Object3D object : scene.getObjects()) {
 //			result = result.plus(this.getObjectReflectionContribution(object));
 //			result = result.plus(this.getObjectTransmissionContribution(object));
 //		}
@@ -143,9 +143,6 @@ public class HallMaterial implements Material {
 		Point point = new Point(ray.getOrigin().toVect3().plus(ray.getDirection().times(intersection.getDistance())));
 
 		if(light.lightsPoint(point, scene)) {
-//			System.out.println("lights");
-//			System.out.println(intersection.getNormal());
-//			intersection.setNormal(intersection.getNormal().times(-1));
 			Color luminance = light.getColor().times(light.getIntensity());
 			double cosangle = light.fromPointToLight(point).normalize().scalar(this.getNormal(ray, intersection));
 			if(cosangle<0) {
@@ -206,8 +203,7 @@ public class HallMaterial implements Material {
 	
 	private Color getRecursiveReflectionContribution(Ray ray, Intersection intersection, Scene scene, int recursionsLeft) {
 		Point point = new Point(ray.getOrigin().toVect3().plus(ray.getDirection().times(intersection.getDistance())));
-		Ray reflectedRay = new Ray(point,
-								   ray.getDirection().times(-1).symmetry(this.getNormal(ray, intersection)));
+		Ray reflectedRay = new Ray(point, ray.getDirection().times(-1).symmetry(this.getNormal(ray, intersection)));
 		return scene.renderRay(reflectedRay, recursionsLeft).times(this.reflectivity);
 	}
 	

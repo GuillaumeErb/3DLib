@@ -1,5 +1,6 @@
 package raytracer;
 
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,6 @@ import javax.swing.JLabel;
 
 public class Screen extends JFrame {
 	private JLabel label;
-
 
     public Screen(int width, int height) {
         super( "Display" );
@@ -31,7 +31,7 @@ public class Screen extends JFrame {
     }
 
 	public void display(BufferedImage image) {
-		label.setIcon(new ImageIcon(image));
+		label.setIcon(new ImageIcon(image.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_DEFAULT)));
     }
 
 }

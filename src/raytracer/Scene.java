@@ -19,6 +19,8 @@ public class Scene implements Serializable {
 	
 	public Camera camera;
 
+	private static final int RECURSIONS_MAX = 10;
+	
 	public Scene(Set<Object3D> objects, Set<Light> lights, Camera camera) {
 		super();
 		this.objects = objects;
@@ -35,7 +37,7 @@ public class Scene implements Serializable {
 	
 	
 	private Color renderRay(Ray ray) {
-		return this.renderRay(ray, 1);
+		return this.renderRay(ray, RECURSIONS_MAX);
 	}
 	
 	public Color renderRay(Ray ray, int recursionsLeft) {

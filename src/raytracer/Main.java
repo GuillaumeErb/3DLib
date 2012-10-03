@@ -1,5 +1,7 @@
 package raytracer;
 
+import io.OBJReader;
+
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,12 +9,15 @@ import java.util.Set;
 import lighting.DirectionalLight;
 import lighting.Light;
 import materials.HallMaterial;
+import objects.Cylinder;
 import objects.HalfSpace;
+import objects.Mesh;
 import objects.Object3D;
 import objects.ObjectCSG;
 import objects.OperationCSG;
 import objects.Quadric;
 import objects.Sphere;
+import objects.Triangle;
 
 import common.Point;
 import common.Vect3;
@@ -30,7 +35,7 @@ public class Main {
 		Camera camera = new Camera(new Point(-100, 0, 0), 
 								   new Vect3(1, 0, 0), 
 								   new Vect3(0, 0, 1), 
-								   2, 0.4, 0.4, 600, 600);
+								   2, 0.4, 0.4, 50, 50);
 		
 //		objects.add(new Sphere(new Point(0,-2,0), 4, 
 //				               new HallMaterial(new Color(0.8, 0.4, 0.2),
@@ -78,10 +83,11 @@ public class Main {
 //
 //		
 //		
-		Quadric q = new Quadric(1, 15, -20, 0, 0, 0, 0, 0, 0, 20, 
+//		Quadric q = new Quadric(40, 40, -20, 0, 0, 0, 0, 0, 0, 20, 
+		Quadric q = new Quadric(1, 1, 0, 0, 0, 0, 0, 0, 0, -20,
 				new HallMaterial(new Color(1, 0, 0),
-						   			0.2,
 						   			0.6,
+						   			0,
 						   			0.4, 
 						   			4, 
 						   			0.8, 
@@ -95,10 +101,10 @@ public class Main {
 //		objects.add(q);
 		
 		
-		Sphere s1 = new Sphere(new Point(0,0,0), 7, 
+		Sphere s1 = new Sphere(new Point(0.5,0.5,0.5), 7, 
 							   new HallMaterial(new Color(0.1, 0.8, 0.2),
-									   			0.2,
-									   			0.6,
+									   			0,
+									   			0,
 									   			0.4, 
 									   			2, 
 									   			0.8, 
@@ -115,12 +121,11 @@ public class Main {
 //				new ObjectCSG(q), new ObjectCSG(s1)));
 		
 		
-		Sphere s2 = new Sphere(new Point(3,-3,0), 10, 
+		Sphere s2 = new Sphere(new Point(4,-4,0), 10, 
 				   new HallMaterial(new Color(0.9, 0.9, 1),
-						   
-						   			0.2,
-						   			0.6,
-						   			0, 
+						   			0,
+						   			0,
+						   			0.2, 
 						   			4, 
 						   			0.8, 
 						   			100,
@@ -149,10 +154,67 @@ public class Main {
 						   		 0,
 						   		 0,
 						   		 1)); 
-//		
-		ObjectCSG spheres = new ObjectCSG(OperationCSG.INTERSECTION, new ObjectCSG(s2), new ObjectCSG(s1));
-//		
+		
+		Sphere s3 = new Sphere(new Point(-8,8,0), 2, 
+				   new HallMaterial(new Color(0.9, 0.9, 0.2),
+						   			0,
+						   			0.8,
+						   			0.6, 
+						   			4, 
+						   			0.8, 
+						   			100,
+						   			new Color(0, 0, 0),
+						   			1,
+						   			1,
+						   			0,
+						   			0,
+						   			1));
+		
+		objects.add(s3);
+		
+		ObjectCSG spheres = new ObjectCSG(OperationCSG.DIFFERENCE, new ObjectCSG(s2), new ObjectCSG(s1));
+		
+//		objects.add(new ObjectCSG(OperationCSG.UNION, spheres, new ObjectCSG(q)));
+		
+//		objects.add(s1);
+//		objects.add(s2);
+		
 		objects.add(spheres);
+		
+		
+		Sphere sphere1 = new Sphere(new Point(0,-4,0), 3.2, 
+				   new HallMaterial(new Color(0.9, 0.1, 0.2),
+						   			0.8,
+						   			0.9,
+						   			0.6, 
+						   			4, 
+						   			0.8, 
+						   			100,
+						   			new Color(0, 0, 0),
+						   			1,
+						   			1,
+						   			0.2,
+						   			0.2,
+						   			1));
+		
+		Sphere sphere2 = new Sphere(new Point(0,2.5,0), 2, 
+				   new HallMaterial(new Color(0.9, 0.9, 0.2),
+						   			0.8,
+						   			0.2,
+						   			0.6, 
+						   			4, 
+						   			0.8, 
+						   			100,
+						   			new Color(0, 0, 0),
+						   			1,
+						   			1,
+						   			0.2,
+						   			0.2,
+						   			1));
+		
+//		objects.add(sphere1);
+//		objects.add(sphere2);
+		
 		
 //		objects.add(new Box(new HallMaterial(new Color(0.9, 0.4, 0.2),
 //						   		 0.2,
@@ -168,38 +230,38 @@ public class Main {
 //						   		 0,
 //						   		 1)));
 		
-//		Cylinder cylinder = new Cylinder(new Point(0, 0, 0), 
-//				new Vect3(0, 0, 1), 5, new HallMaterial(new Color(0.9, 0.4, 0.2),
-//				   		 0.2,
-//				   		 0.6,
-//				   		 0.1, 
-//				   		 2, 
-//				   		 0.8, 
-//				   		 100,
-//				   		 new Color(0, 0, 0),
-//				   		 1,
-//				   		 1,
-//				   		 0,
-//				   		 0,
-//				   		 1)); 
-//		
+		Cylinder cylinder = new Cylinder(new Point(0, 0, 0), 
+				new Vect3(0, 0, 1), 5, new HallMaterial(new Color(0.9, 0.4, 0.2),
+				   		 0.2,
+				   		 0.6,
+				   		 0.1, 
+				   		 2, 
+				   		 0.8, 
+				   		 100,
+				   		 new Color(0, 0, 0),
+				   		 1,
+				   		 1,
+				   		 0,
+				   		 0,
+				   		 1)); 
+		
 //		objects.add(cylinder);
 		
-		Sphere s3 = new Sphere(new Point(0,0,0), 8, 
-				   new HallMaterial(new Color(0.5, 0.4, 0.7),
-						   			0.2,
-						   			0.6,
-						   			0.4, 
-						   			2, 
-						   			0.8, 
-						   			100,
-						   			new Color(0, 0, 0),
-						   			1,
-						   			1,
-						   			0,
-						   			0,
-						   			1,
-						   			0));
+//		Sphere s3 = new Sphere(new Point(0,0,0), 8, 
+//				   new HallMaterial(new Color(0.5, 0.4, 0.7),
+//						   			0.2,
+//						   			0.6,
+//						   			0.4, 
+//						   			2, 
+//						   			0.8, 
+//						   			100,
+//						   			new Color(0, 0, 0),
+//						   			1,
+//						   			1,
+//						   			0,
+//						   			0,
+//						   			1,
+//						   			0));
 		
 //		objects.add(s3);
 		
@@ -248,8 +310,8 @@ public class Main {
 		
 		
 		
-//		OBJReader reader = new OBJReader("d:\\programming\\3DLib\\sphere");
-//		Mesh mesh = reader.extractMesh();
+		OBJReader reader = new OBJReader("d:\\programming\\3DLib\\sphere");
+		Mesh mesh = reader.extractMesh();
 //		objects.add(mesh);
 //		for(Triangle t : mesh.getTriangles()) {
 ////			objects.add(t);
@@ -287,11 +349,11 @@ public class Main {
 //			l++;
 //		}
 		
-//		lights.add(new DirectionalLight(new Color(1,1,1), 1,
-//										(new Vect3(-0.02,-1,0.2)).normalize()));
-
 		lights.add(new DirectionalLight(new Color(1,1,1), 1,
-									  	(new Vect3(3,-1,3)).normalize()));
+										(new Vect3(1, -1, 0)).normalize()));
+
+//		lights.add(new DirectionalLight(new Color(1,1,1), 1,
+//									  	(new Vect3(3,-1,3)).normalize()));
 		Scene scene = new Scene(objects, lights, camera);
 		
 //		ArrayList<Point> points = new ArrayList<Point>();
@@ -306,9 +368,10 @@ public class Main {
 //			objects.add(sphere);
 //		}
 
-		Screen screen = new Screen(camera.getXResolution(), camera.getYResolution());
+//		Screen screen = new Screen(camera.getXResolution(), camera.getYResolution());
+		Screen screen = new Screen(700, 700);
 		Renderer renderer = new Renderer(scene, camera, screen);
-		BufferedImage image = renderer.render(camera, scene); 
+		BufferedImage image = renderer.render(); 
 		screen.display(image);
 		
 		

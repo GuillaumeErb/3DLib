@@ -30,5 +30,12 @@ public class Ray implements Serializable {
 	public void setDirection(Vect3 direction) {
 		this.direction = direction;
 	}
+
+	@Override
+	public String toString() {
+		return "Ray [origin=" + origin + ", direction=" + direction + "]";
+	}
+
+	
 	
 }

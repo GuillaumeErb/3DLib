@@ -86,17 +86,34 @@ public class ObjectCSG implements Object3D {
 	public Intersection getIntersection(Ray ray) {
 		
 		List<Intersection> intersections = this.getIntersections(ray);
-		if(intersections == null) {
-			return null;
+		if(intersections != null) {
+			Collections.sort(intersections);
+			for(Intersection i : intersections) {
+				if(i.getDistance() >= 0) {
+					return i;
+				}
+			}
 		}
-		if(intersections.size()>0) {
-			return intersections.get(0);
-		} else {
-			return null;
-		}
-		
+		return null;
 	}
-
+	
+//	public List<Intersection> getAllIntersections(Ray ray) {
+//		List<Intersection> li = new ArrayList<Intersection>();
+//		if(this.primitive != null) {
+//			li.addAll(this.primitive.getIntersections(ray));
+//		} else {
+//			li.addAll(this.getLeftSubtree().getAllIntersections(ray));
+//			li.addAll(this.getRightSubtree().getAllIntersections(ray));
+//		}
+//		
+//		if(li.isEmpty()) {
+//			return null;
+//		} else {
+//			return li;
+//		}
+//		
+//	}
+	
 	public List<Intersection> getIntersections(Ray ray) {
 		if(this.primitive != null) {
 			return this.primitive.getIntersections(ray);
